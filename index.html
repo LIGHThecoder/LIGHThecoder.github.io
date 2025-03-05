@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Linktree</title>
   <style>
-    /* Ensure full height for vertical centering */
     html, body {
       height: 100%;
       margin: 0;
@@ -16,7 +15,6 @@
       align-items: center;
       text-align: center;
       font-family: Arial, sans-serif;
-      /* Animated gradient background from blue to purple */
       background: linear-gradient(135deg, #3498db, #9b59b6, #3498db);
       background-size: 400% 400%;
       animation: gradientAnimation 15s ease infinite;
@@ -27,15 +25,18 @@
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-    .container {
+    .box {
       max-width: 400px;
       width: 100%;
       background: rgba(255, 255, 255, 0.8);
       padding: 30px;
       border-radius: 15px;
       box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-      /* Shift container further upward */
       transform: translateY(-40px);
+    }
+    /* Added to increase password container width */
+    .box.password-container {
+      max-width: 600px;
     }
     .profile img {
       width: 150px;
@@ -44,43 +45,104 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
     h2 {
-      /* Gradient text from dark blue to dark purple */
       background: linear-gradient(to right, darkblue, darkviolet);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       font-size: 1.8em;
       margin: 15px 0;
     }
-    .links a {
+    .btn {
       display: block;
-      /* Attractive gradient button look */
       background: linear-gradient(to right, #6a11cb, #2575fc);
       color: #fff;
-      padding: 12px;
+      padding: 15px; /* Updated from 12px */
       margin: 10px 0;
       text-decoration: none;
       border-radius: 25px;
       transition: transform 0.3s, box-shadow 0.3s;
       font-weight: bold;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1em; /* Added */
     }
-    .links a:hover {
+    .btn:hover {
       transform: scale(1.05);
       box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+    input[type="password"] {
+      padding: 15px; /* Updated from 10px */
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 15px;
+      font-size: 1.1em; /* Added */
+    }
+    #error-message {
+      color: red;
+      margin-top: 10px;
+      font-size: 1.1em; /* Added */
+    }
+    /* Added to increase paragraph text size */
+    .box.password-container p {
+      font-size: 1.2em;
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="box password-container">
+    <form>
+      <p>Enter password to access the site:</p>
+      <input type="password" id="password-input">
+      <button type="submit" class="btn">Submit</button>
+      <div id="error-message" style="display: none;"></div>
+    </form>
+  </div>
+  <div class="box container" style="display: none;">
     <div class="profile">
       <img src="profile.jpg" alt="Profile Picture">
       <h2>Nikhil Rajendra Gaikwad</h2>
     </div>
     <div class="links">
-        <a href="https://www.linkedin.com/in/nikhil-gaikwad-619g/" target="_blank">linkedIn</a>
-        <a href="https://www.youtube.com/@ghost_12380" target="_blank">YouTube</a>
-        <a href="https://x.com/gaikwad_ni88942" target="_blank">Twitter</a>
-        <a href="https://www.instagram.com/nik_hil_120/" target="_blank">Instagram</a>
+      <a href="https://www.linkedin.com/in/nikhil-gaikwad-619g/" target="_blank" class="btn">LinkedIn</a>
+      <a href="https://www.youtube.com/@ghost_12380" target="_blank" class="btn">YouTube</a>
+      <a href="https://x.com/gaikwad_ni88942" target="_blank" class="btn">Twitter</a>
+      <a href="https://www.instagram.com/nik_hil_120/" target="_blank" class="btn">Instagram</a>
     </div>
   </div>
+
+  <script>
+    const passwordContainer = document.querySelector('.password-container');
+    const mainContainer = document.querySelector('.container');
+    const form = passwordContainer.querySelector('form');
+    const input = document.querySelector('#password-input');
+    const errorMessage = document.querySelector('#error-message');
+
+    const x = "11011000110000111010";
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const inputValue = input.value;
+      // Convert the user input (expected in decimal) to a number.
+      const inputNumber = parseInt(inputValue, 10);
+
+      // If the conversion fails, inputNumber will be NaN.
+      if (isNaN(inputNumber)) {
+        errorMessage.textContent = 'Please enter a valid decimal number.';
+        errorMessage.style.display = 'block';
+        return;
+      }
+
+      const y = inputNumber.toString(2);
+
+      if (y === x) {
+        passwordContainer.style.display = 'none';
+        mainContainer.style.display = 'block';
+      } else {
+        errorMessage.textContent = 'Incorrect password';
+        errorMessage.style.display = 'block';
+      }
+    });
+  </script>
 </body>
 </html>
