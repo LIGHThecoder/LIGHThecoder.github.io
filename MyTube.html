@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ff0000;
+            --primary-dark: #cc0000;
+            --background: #0f0f0f;
+            --surface: #212121;
+            --surface-light: #383838;
+            --text-primary: #ffffff;
+            --text-secondary: #aaaaaa;
+            --border: #303030;
+            --hover: #383838;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            background-color: var(--background);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+        
+        .menu-btn:hover {
+            background-color: var(--hover);
+        }
+        
+        .youtube-logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+        
+        .youtube-logo i {
+            color: var(--primary);
+            margin-right: 0.3rem;
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .main-container {
+            display: flex;
+            padding: 1.5rem 2rem;
+            gap: 1.5rem;
+        }
+        
+        .video-container {
+            flex: 2;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .video-player {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 12px;
+            background-color: black;
+        }
+        
+        .video-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: var(--surface);
+            border-radius: 12px;
+        }
+        
+        .video-title {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .video-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: background-color 0.2s;
+        }
+        
+        .action-btn:hover {
+            background-color: var(--hover);
+        }
+        
+        .action-btn.like {
+            color: var(--primary);
+        }
+        
+        .favorite-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: color 0.2s;
+        }
+        
+        .favorite-btn.active {
+            color: var(--primary);
+        }
+        
+        .favorite-btn:hover {
+            color: var(--primary);
+        }
+        
+        .sidebar {
+            flex: 1;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .section {
+            background-color: var(--surface);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .section-action {
+            color: var(--primary);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .video-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        
+        .video-item {
+            display: flex;
+            gap: 0.8rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .video-item:hover {
+            background-color: var(--hover);
+        }
+        
+        .thumbnail {
+            width: 120px;
+            height: 68px;
+            border-radius: 4px;
+            object-fit: cover;
+            background-color: var(--surface-light);
+        }
+        
+        .video-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .video-item-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .video-item-channel {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            background-color: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            background-color: var(--primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .empty-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--surface-light);
+        }
+        
+        .empty-text {
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                max-width: 100%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+            
+            .main-container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-container">
+            <button class="menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="youtube-logo">
+                <i class="fab fa-youtube"></i>
+                MyTube
+            </div>
+        </div>
+        
+        <div class="user-actions">
+            <i class="fas fa-video" style="cursor: pointer;"></i>
+            <i class="fas fa-bell" style="cursor: pointer;"></i>
+            <div class="user-icon">U</div>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="video-container">
+            <iframe id="current-video" class="video-player" src="https://www.youtube.com/embed/0_bkdqBvEjc?si=VxFyf45MpdMWOo-q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            
+            <div class="video-info">
+                <h1 class="video-title" id="current-video-title">Currently Playing Video</h1>
+                <div class="video-actions">
+                    <div class="action-group">
+                        <button class="action-btn like">
+                            <i class="fas fa-thumbs-up"></i> <span id="like-count">125K</span>
+                        </button>
+                        <button class="action-btn">
+                            <i class="fas fa-thumbs-down"></i> Dislike
+                        </button>
+                    </div>
+                    <button class="action-btn">
+                        <i class="fas fa-share"></i> Share
+                    </button>
+                    <button class="action-btn" id="favorite-btn" onclick="toggleFavorite()">
+                        <i class="fas fa-heart"></i> Favorite
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Add Video</h2>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">YouTube Video URL</label>
+                    <input type="text" id="video-url" class="form-input" placeholder="https://www.youtube.com/watch?v=...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Video Title</label>
+                    <input type="text" id="video-title" class="form-input" placeholder="Enter a title (optional)">
+                </div>
+                <button class="btn" onclick="addVideo()">
+                    <i class="fas fa-plus"></i> Add to Queue
+                </button>
+            </div>
+            
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Upcoming Videos</h2>
+                    <span class="section-action" onclick="clearUpcoming()">Clear all</span>
+                </div>
+                <div id="upcoming-list" class="video-list">
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <div class="empty-text">No videos in queue</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Favorites</h2>
+                    <span class="section-action" onclick="clearFavorites()">Clear all</span>
+                </div>
+                <div id="favorites-list" class="video-list">
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="empty-text">No favorite videos yet</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Watched Videos</h2>
+                    <span class="section-action" onclick="clearWatched()">Clear all</span>
+                </div>
+                <div id="watched-list" class="video-list">
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div class="empty-text">No watched videos yet</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Store videos in local storage
+        let upcomingVideos = JSON.parse(localStorage.getItem('upcomingVideos')) || [];
+        let watchedVideos = JSON.parse(localStorage.getItem('watchedVideos')) || [];
+        let favoriteVideos = JSON.parse(localStorage.getItem('favoriteVideos')) || [];
+        
+        // Get current video ID
+        const currentVideoSrc = document.getElementById('current-video').src;
+        const currentVideoId = extractVideoId(currentVideoSrc);
+        
+        // Function to extract video ID from URL
+        function extractVideoId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|e\/|u\/\w+\/|embed\/|v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : false;
+        }
+        
+        // Add current video to watched list when page loads
+        window.onload = function() {
+            if (currentVideoId) {
+                // Add current video to watched videos
+                addToWatched(currentVideoId, "Current Video");
+                renderLists();
+            }
+            
+            // Check if current video is favorited
+            updateFavoriteButton();
+        };
+        
+        // Toggle favorite status for current video
+        function toggleFavorite() {
+            const videoId = extractVideoId(document.getElementById('current-video').src);
+            const videoTitle = document.getElementById('current-video-title').textContent;
+            
+            if (!videoId) return;
+            
+            const index = favoriteVideos.findIndex(video => video.id === videoId);
+            
+            if (index === -1) {
+                // Add to favorites
+                favoriteVideos.unshift({
+                    id: videoId,
+                    title: videoTitle,
+                    added: new Date().toISOString()
+                });
+                showToast('Added to favorites');
+            } else {
+                // Remove from favorites
+                favoriteVideos.splice(index, 1);
+                showToast('Removed from favorites');
+            }
+            
+            // Save to local storage
+            localStorage.setItem('favoriteVideos', JSON.stringify(favoriteVideos));
+            
+            // Update button and list
+            updateFavoriteButton();
+            renderLists();
+        }
+        
+        // Update favorite button appearance
+        function updateFavoriteButton() {
+            const videoId = extractVideoId(document.getElementById('current-video').src);
+            const favoriteBtn = document.getElementById('favorite-btn');
+            
+            if (!favoriteBtn || !videoId) return;
+            
+            const isFavorite = favoriteVideos.some(video => video.id === videoId);
+            favoriteBtn.classList.toggle('active', isFavorite);
+            favoriteBtn.innerHTML = isFavorite 
+                ? '<i class="fas fa-heart"></i> Favorited' 
+                : '<i class="fas fa-heart"></i> Favorite';
+        }
+        
+        // Add a video to upcoming videos list
+        function addVideo() {
+            const url = document.getElementById('video-url').value;
+            const title = document.getElementById('video-title').value || "Untitled Video";
+            
+            const videoId = extractVideoId(url);
+            
+            if (videoId) {
+                upcomingVideos.push({
+                    id: videoId,
+                    title: title,
+                    added: new Date().toISOString()
+                });
+                
+                // Save to local storage
+                localStorage.setItem('upcomingVideos', JSON.stringify(upcomingVideos));
+                
+                // Clear input fields
+                document.getElementById('video-url').value = '';
+                document.getElementById('video-title').value = '';
+                
+                renderLists();
+                
+                // Show success feedback
+                showToast('Video added to queue');
+            } else {
+                showToast('Please enter a valid YouTube URL', 'error');
+            }
+        }
+        
+        // Play a video from the upcoming list
+        function playVideo(videoId) {
+            const iframe = document.getElementById('current-video');
+            const videoToPlay = upcomingVideos.find(video => video.id === videoId) || 
+                              watchedVideos.find(video => video.id === videoId) ||
+                              favoriteVideos.find(video => video.id === videoId);
+            
+            if (videoToPlay) {
+                // Add current video to watched
+                const currentSrc = iframe.src;
+                const currentId = extractVideoId(currentSrc);
+                const currentTitle = document.getElementById('current-video-title').textContent;
+                
+                if (currentId && currentId !== videoId) {
+                    addToWatched(currentId, currentTitle);
+                }
+                
+                // Play new video
+                iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                document.getElementById('current-video-title').textContent = videoToPlay.title;
+                
+                // Remove from upcoming if it was there
+                upcomingVideos = upcomingVideos.filter(video => video.id !== videoId);
+                localStorage.setItem('upcomingVideos', JSON.stringify(upcomingVideos));
+                
+                // Add to watched
+                addToWatched(videoId, videoToPlay.title);
+                
+                renderLists();
+                updateFavoriteButton();
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+        
+        // Add a video to watched videos list
+        function addToWatched(videoId, title) {
+            // Check if already in watched list
+            if (!watchedVideos.some(video => video.id === videoId)) {
+                watchedVideos.unshift({
+                    id: videoId,
+                    title: title,
+                    watched: new Date().toISOString()
+                });
+                
+                // Limit to last 10 watched videos
+                if (watchedVideos.length > 10) {
+                    watchedVideos = watchedVideos.slice(0, 10);
+                }
+                
+                // Save to local storage
+                localStorage.setItem('watchedVideos', JSON.stringify(watchedVideos));
+            }
+        }
+        
+        // Clear upcoming videos
+        function clearUpcoming() {
+            if (upcomingVideos.length > 0) {
+                if (confirm('Are you sure you want to clear all upcoming videos?')) {
+                    upcomingVideos = [];
+                    localStorage.setItem('upcomingVideos', JSON.stringify(upcomingVideos));
+                    renderLists();
+                    showToast('Queue cleared');
+                }
+            }
+        }
+        
+        // Clear favorites
+        function clearFavorites() {
+            if (favoriteVideos.length > 0) {
+                if (confirm('Are you sure you want to clear all favorites?')) {
+                    favoriteVideos = [];
+                    localStorage.setItem('favoriteVideos', JSON.stringify(favoriteVideos));
+                    renderLists();
+                    showToast('Favorites cleared');
+                    updateFavoriteButton();
+                }
+            }
+        }
+        
+        // Clear watched videos
+        function clearWatched() {
+            if (watchedVideos.length > 0) {
+                if (confirm('Are you sure you want to clear your watch history?')) {
+                    watchedVideos = [];
+                    localStorage.setItem('watchedVideos', JSON.stringify(watchedVideos));
+                    renderLists();
+                    showToast('History cleared');
+                }
+            }
+        }
+        
+        // Render the video lists
+        function renderLists() {
+            const upcomingList = document.getElementById('upcoming-list');
+            const watchedList = document.getElementById('watched-list');
+            const favoritesList = document.getElementById('favorites-list');
+            
+            // Render upcoming videos
+            if (upcomingVideos.length > 0) {
+                upcomingList.innerHTML = '';
+                upcomingVideos.forEach(video => {
+                    upcomingList.innerHTML += `
+                        <div class="video-item" onclick="playVideo('${video.id}')">
+                            <img class="thumbnail" src="https://img.youtube.com/vi/${video.id}/mqdefault.jpg" alt="${video.title}">
+                            <div class="video-details">
+                                <div class="video-item-title">${video.title}</div>
+                                <div class="video-item-channel">Added ${formatDate(video.added)}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                upcomingList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <div class="empty-text">No videos in queue</div>
+                    </div>
+                `;
+            }
+            
+            // Render favorites
+            if (favoriteVideos.length > 0) {
+                favoritesList.innerHTML = '';
+                favoriteVideos.forEach(video => {
+                    favoritesList.innerHTML += `
+                        <div class="video-item" onclick="playVideo('${video.id}')">
+                            <img class="thumbnail" src="https://img.youtube.com/vi/${video.id}/mqdefault.jpg" alt="${video.title}">
+                            <div class="video-details">
+                                <div class="video-item-title">${video.title}</div>
+                                <div class="video-item-channel">Favorited ${formatDate(video.added)}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                favoritesList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="empty-text">No favorite videos yet</div>
+                    </div>
+                `;
+            }
+            
+            // Render watched videos
+            if (watchedVideos.length > 0) {
+                watchedList.innerHTML = '';
+                watchedVideos.forEach(video => {
+                    watchedList.innerHTML += `
+                        <div class="video-item" onclick="playVideo('${video.id}')">
+                            <img class="thumbnail" src="https://img.youtube.com/vi/${video.id}/mqdefault.jpg" alt="${video.title}">
+                            <div class="video-details">
+                                <div class="video-item-title">${video.title}</div>
+                                <div class="video-item-channel">Watched ${formatDate(video.watched)}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                watchedList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div class="empty-text">No watched videos yet</div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Format date for display
+        function formatDate(isoString) {
+            const date = new Date(isoString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+        
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.position = 'fixed';
+            toast.style.bottom = '20px';
+            toast.style.right = '20px';
+            toast.style.padding = '12px 24px';
+            toast.style.backgroundColor = type === 'error' ? '#cc0000' : '#0f9d58';
+            toast.style.color = 'white';
+            toast.style.borderRadius = '4px';
+            toast.style.zIndex = '1000';
+            toast.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+            toast.style.animation = 'fadeIn 0.3s';
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'fadeOut 0.3s';
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+        
+        // Initial render
+        renderLists();
+    </script>
+</body>
+</html>
