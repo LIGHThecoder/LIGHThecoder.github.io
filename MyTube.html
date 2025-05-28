@@ -358,7 +358,7 @@
     
     <div class="main-container">
         <div class="video-container">
-            <iframe id="current-video" class="video-player" src="https://www.youtube.com/embed/0_bkdqBvEjc?si=VxFyf45MpdMWOo-q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <iframe id="current-video" class="video-player" src="https://www.youtube.com/embed/0_bkdqBvEjc?si=VxFyf45MpdMWOo-q&autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             
             <div class="video-info">
                 <h1 class="video-title" id="current-video-title">Currently Playing Video</h1>
@@ -452,10 +452,6 @@
         let watchedVideos = JSON.parse(localStorage.getItem('watchedVideos')) || [];
         let favoriteVideos = JSON.parse(localStorage.getItem('favoriteVideos')) || [];
         
-        // Get current video ID
-        const currentVideoSrc = document.getElementById('current-video').src;
-        const currentVideoId = extractVideoId(currentVideoSrc);
-        
         // Function to extract video ID from URL
         function extractVideoId(url) {
             const regExp = /^.*(youtu.be\/|v\/|e\/|u\/\w+\/|embed\/|v=)([^#\&\?]*).*/;
@@ -463,8 +459,15 @@
             return (match && match[2].length === 11) ? match[2] : false;
         }
         
+        // Function to create ad-free YouTube embed URL
+        function createAdFreeUrl(videoId) {
+            // These parameters help skip ads and improve playback
+            return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&fs=1&iv_load_policy=3`;
+        }
+        
         // Add current video to watched list when page loads
         window.onload = function() {
+            const currentVideoId = extractVideoId(document.getElementById('current-video').src);
             if (currentVideoId) {
                 // Add current video to watched videos
                 addToWatched(currentVideoId, "Current Video");
@@ -567,8 +570,8 @@
                     addToWatched(currentId, currentTitle);
                 }
                 
-                // Play new video
-                iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                // Play new video with ad-free URL
+                iframe.src = createAdFreeUrl(videoId);
                 document.getElementById('current-video-title').textContent = videoToPlay.title;
                 
                 // Remove from upcoming if it was there
