@@ -121,19 +121,19 @@
   </div>
 
   <script>
-    // Check if user has already entered the correct password
+    // Always show password screen when page loads
     window.onload = function() {
-      if (localStorage.getItem('passwordCorrect') === 'true') {
-        document.getElementById('password-section').style.display = 'none';
-        document.getElementById('content').style.display = 'block';
-      }
+      // Reset to password view every time
+      document.getElementById('password-section').style.display = 'block';
+      document.getElementById('content').style.display = 'none';
+      document.getElementById('password-input').value = '';
+      document.getElementById('error-message').textContent = '';
     };
 
     function checkPassword() {
       const password = document.getElementById('password-input').value;
       // Change 'yourpassword' to your desired password
       if (password === '885522') {
-        localStorage.setItem('passwordCorrect', 'true');
         document.getElementById('password-section').style.display = 'none';
         document.getElementById('content').style.display = 'block';
       } else {
