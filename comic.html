@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Z-READS // SYNC-READY</title>
+    <title>Z-READS // IMMERSIVE-MASTER</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
 
         :root {
             --bg-deep: #050a0f;
-            --surface: rgba(15, 15, 15, 0.4);
+            --surface: rgba(15, 15, 15, 0.6);
             --card: rgba(255, 255, 255, 0.03);
             --mint: #00ff88;
             --blue: #3e81ff;
@@ -72,20 +72,23 @@
             background: var(--gradient);
             border: none;
             color: #000;
-            padding: 12px 26px;
-            border-radius: 16px;
+            padding: 10px 22px;
+            border-radius: 14px;
             font-weight: 800;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             cursor: pointer;
-            transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transition: 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .z-btn:hover { 
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.5); 
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4); 
         }
 
         header {
@@ -98,6 +101,7 @@
             backdrop-filter: blur(30px);
             z-index: 100;
             background: rgba(255, 255, 255, 0.02);
+            transition: transform 0.4s ease;
         }
 
         .logo { font-weight: 800; font-size: 1.8rem; letter-spacing: -2px; }
@@ -121,17 +125,15 @@
             padding: 3rem;
             transition: 0.5s cubic-bezier(0.23, 1, 0.32, 1);
             position: relative;
-            overflow: hidden;
         }
 
         .project-card:hover {
             border-color: var(--mint);
             transform: translateY(-10px);
             background: rgba(255, 255, 255, 0.07);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 20px rgba(0, 255, 136, 0.2);
         }
 
-        .project-card h3 { font-size: 1.5rem; margin-bottom: 0.8rem; letter-spacing: -0.5px; }
+        .project-card h3 { font-size: 1.5rem; margin-bottom: 0.8rem; }
         .project-card p { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 2.5rem; }
 
         #view-reader {
@@ -154,6 +156,7 @@
             justify-content: center;
             align-items: center;
             padding: 30px;
+            position: relative;
         }
 
         #comic-page {
@@ -162,9 +165,96 @@
             object-fit: contain;
             border-radius: 8px;
             box-shadow: 0 0 120px rgba(0,0,0,0.9), 0 0 60px var(--glow-tl);
-            transition: opacity 0.5s ease;
             z-index: 5;
+            transition: max-height 0.4s ease;
         }
+
+        /* Fullscreen tweaks */
+        body.is-fullscreen header { transform: translateY(-100%); }
+        body.is-fullscreen #comic-page { max-height: calc(100vh - 120px); }
+
+        /* --- Floating Corner Actions --- */
+        .corner-actions {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1.2rem;
+        }
+
+        .icon-btn:hover {
+            border-color: var(--mint);
+            background: rgba(0, 255, 136, 0.1);
+            transform: scale(1.1);
+        }
+
+        /* --- Asset Manager Drawer --- */
+        #asset-manager {
+            position: fixed;
+            top: 0; right: -400px;
+            width: 400px; height: 100%;
+            background: rgba(10, 15, 20, 0.95);
+            backdrop-filter: blur(30px);
+            border-left: 1px solid var(--glass-border);
+            z-index: 200;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+        }
+
+        #asset-manager.active { right: 0; }
+
+        .asset-list {
+            flex: 1;
+            overflow-y: auto;
+            margin: 20px 0;
+            padding-right: 10px;
+        }
+
+        .asset-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card);
+            padding: 12px 18px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid transparent;
+            transition: 0.2s;
+        }
+
+        .asset-item:hover { border-color: var(--mint); background: rgba(255, 255, 255, 0.05); }
+
+        .asset-info { font-size: 0.85rem; color: var(--text-main); }
+        .asset-delete-btn {
+            background: rgba(255, 62, 129, 0.1);
+            color: #ff3e81;
+            border: 1px solid rgba(255, 62, 129, 0.3);
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: 0.2s;
+        }
+        .asset-delete-btn:hover { background: #ff3e81; color: white; }
 
         .modal {
             position: fixed;
@@ -174,7 +264,7 @@
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 200;
+            z-index: 300;
         }
 
         .modal-content {
@@ -185,23 +275,20 @@
             width: 95%;
             max-width: 500px;
             text-align: center;
-            box-shadow: 0 0 80px rgba(0, 255, 136, 0.15);
         }
 
         .modal-content input {
             width: 100%;
             background: rgba(0,0,0,0.5);
             border: 1px solid var(--glass-border);
-            padding: 20px;
+            padding: 18px;
             color: white;
             border-radius: 20px;
-            margin: 30px 0;
-            font-size: 1.1rem;
-            outline: none;
+            margin: 25px 0;
+            font-size: 1rem;
             text-align: center;
+            outline: none;
         }
-
-        .modal-content input:focus { border-color: var(--mint); box-shadow: 0 0 20px rgba(0, 255, 136, 0.3); }
 
         footer {
             height: 100px;
@@ -228,22 +315,16 @@
             font-size: 1.4rem;
         }
 
-        .nav-circle:hover:not(:disabled) { 
-            border-color: var(--mint); 
-            color: var(--mint); 
-            transform: scale(1.2); 
-            box-shadow: 0 0 25px rgba(0, 255, 136, 0.4); 
-        }
+        .nav-circle:hover:not(:disabled) { border-color: var(--mint); transform: scale(1.15); }
         .nav-circle:disabled { opacity: 0.05; }
 
-        #page-info { font-weight: 800; font-size: 1rem; letter-spacing: 4px; color: var(--mint); text-shadow: 0 0 10px rgba(0,255,136,0.3); }
+        #page-info { font-weight: 800; font-size: 1rem; letter-spacing: 4px; color: var(--mint); }
 
         #toast {
             position: fixed; bottom: 40px; right: 40px;
             background: var(--gradient); color: #000;
             padding: 16px 32px; border-radius: 20px;
             font-weight: 800; z-index: 1000; display: none;
-            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.4);
         }
     </style>
 </head>
@@ -257,34 +338,52 @@
         <div class="glow-point gp-3"></div>
     </div>
 
-    <header>
+    <header id="main-header">
         <div class="logo z-gradient-text" id="btn-go-home" style="cursor: pointer;">Z-READS</div>
-        <div id="header-actions">
+        <div id="header-actions" style="display: flex; gap: 15px;">
+            <button id="btn-manage-assets" class="z-btn" style="display: none; background: transparent; color: white; border: 1px solid var(--glass-border);">⚙️ Manage Assets</button>
             <button id="btn-new-project" class="z-btn">New Project</button>
             <button id="btn-back-to-list" class="z-btn" style="display: none; background: transparent; color: white; border: 1px solid var(--glass-border);">Dashboard</button>
         </div>
     </header>
 
+    <!-- Project Asset Manager Drawer -->
+    <div id="asset-manager">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 class="z-gradient-text" style="font-size: 1.2rem;">PROJECT ASSETS</h2>
+            <button id="btn-close-manager" style="background: none; border: none; color: #777; cursor: pointer; font-size: 1.5rem;">×</button>
+        </div>
+        
+        <button id="btn-add-more" class="z-btn" style="width: 100%;">➕ Add More Images</button>
+        
+        <div id="asset-list" class="asset-list">
+            <!-- Asset items injected here -->
+        </div>
+
+        <p style="font-size: 0.7rem; color: var(--text-dim); text-align: center;">Click page name to jump to it.</p>
+    </div>
+
     <main id="view-list" class="view active">
         <h2 style="font-size: 3.5rem; text-align: center; margin-top: 4rem; font-weight: 800; letter-spacing: -3px;">
             THE <span class="z-gradient-text">MULTIVERSE</span>
         </h2>
-        <p style="text-align: center; color: var(--text-dim); margin-top: 1rem; font-size: 1.2rem;">
-            Experience comic reading through an ambient lens.
-        </p>
         <div id="project-grid" class="project-grid"></div>
     </main>
 
     <main id="view-reader" class="view">
-        <div class="reader-stage">
+        <div class="reader-stage" id="reader-stage">
+            <div class="corner-actions" id="reader-corner-actions" style="display: none;">
+                <button id="btn-fullscreen-toggle" class="icon-btn" title="Toggle Immersive Mode">⛶</button>
+            </div>
+
             <div id="empty-project" class="empty-state" style="text-align: center; color: var(--text-dim);">
-                <h2>SYNC REQUIRED</h2>
-                <p style="margin-bottom: 25px;">No assets found in this project stream.</p>
-                <button id="btn-upload-trigger" class="z-btn">Import Images</button>
+                <h2>EMPTY PROJECT</h2>
+                <p style="margin-bottom: 25px;">No images synced to this stream yet.</p>
+                <button id="btn-reader-upload" class="z-btn">Sync Images From PC</button>
             </div>
             <img id="comic-page" src="" alt="Comic Page" style="display: none;">
         </div>
-        <footer>
+        <footer id="reader-footer">
             <button id="prev-btn" class="nav-circle">←</button>
             <div id="page-info">00 // 00</div>
             <button id="next-btn" class="nav-circle">→</button>
@@ -294,7 +393,6 @@
     <div id="modal-project" class="modal">
         <div class="modal-content">
             <h2 class="z-gradient-text" style="font-size: 2.2rem;">INITIATE VERSION</h2>
-            <p style="font-size: 0.9rem; color: var(--text-dim); margin-top: 8px;">Allocate space for your language stream.</p>
             <input type="text" id="input-project-name" placeholder="Language / Version Name">
             <div style="display: flex; gap: 20px; justify-content: center;">
                 <button id="btn-modal-cancel" class="z-btn" style="background: transparent; border: 1px solid var(--glass-border); color: white;">Abort</button>
@@ -307,7 +405,7 @@
     <canvas id="color-sampler" style="display:none;"></canvas>
 
     <script>
-        const DB_NAME = "ZReads_Multilingual_v5"; // Version bump for reliability
+        const DB_NAME = "ZReads_Multilingual_v6";
         const STORES = { PROJECTS: "projects", PAGES: "pages" };
         let db;
 
@@ -326,8 +424,7 @@
 
         async function createProject(name) {
             const transaction = db.transaction([STORES.PROJECTS], "readwrite");
-            const store = transaction.objectStore(STORES.PROJECTS);
-            return store.add({ name, createdAt: new Date(), lastPageIndex: 0 });
+            return transaction.objectStore(STORES.PROJECTS).add({ name, createdAt: new Date(), lastPageIndex: 0 });
         }
 
         async function updateProjectProgress(projectId, index) {
@@ -350,25 +447,25 @@
             });
         }
 
-        /** * FIX: Reliable Async Image Uploading 
-         * Now uses Promise.all to ensure every image is saved before finishing
-         */
         async function addPages(projectId, files) {
             const uploadPromises = Array.from(files).map(file => {
                 return new Promise((resolve, reject) => {
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         const transaction = db.transaction([STORES.PAGES], "readwrite");
-                        const store = transaction.objectStore(STORES.PAGES);
-                        const addRequest = store.add({ projectId, data: e.target.result, name: file.name });
-                        addRequest.onsuccess = () => resolve();
-                        addRequest.onerror = () => reject();
+                        transaction.objectStore(STORES.PAGES).add({ projectId, data: e.target.result, name: file.name });
+                        resolve();
                     };
-                    reader.onerror = () => reject();
                     reader.readAsDataURL(file);
                 });
             });
             return Promise.all(uploadPromises);
+        }
+
+        async function deletePage(id) {
+            const transaction = db.transaction([STORES.PAGES], "readwrite");
+            transaction.objectStore(STORES.PAGES).delete(id);
+            return new Promise(resolve => transaction.oncomplete = resolve);
         }
 
         async function getPagesByProject(projectId) {
@@ -385,6 +482,9 @@
         async function deleteProject(id) {
             const tx = db.transaction([STORES.PROJECTS, STORES.PAGES], "readwrite");
             tx.objectStore(STORES.PROJECTS).delete(id);
+            const index = tx.objectStore(STORES.PAGES).index("projectId");
+            const req = index.getAllKeys(IDBKeyRange.only(id));
+            req.onsuccess = () => { req.result.forEach(key => tx.objectStore(STORES.PAGES).delete(key)); };
             return new Promise(resolve => tx.oncomplete = resolve);
         }
 
@@ -393,9 +493,13 @@
         let currentIndex = 0;
 
         const views = { list: document.getElementById('view-list'), reader: document.getElementById('view-reader') };
+        const assetManager = document.getElementById('asset-manager');
+        const assetList = document.getElementById('asset-list');
         const modal = document.getElementById('modal-project');
         const grid = document.getElementById('project-grid');
         const toast = document.getElementById('toast');
+        const btnFullscreen = document.getElementById('btn-fullscreen-toggle');
+        const readerCornerActions = document.getElementById('reader-corner-actions');
 
         function showToast(msg) {
             toast.innerText = msg; toast.style.display = 'block';
@@ -406,7 +510,14 @@
             Object.values(views).forEach(v => v.classList.remove('active'));
             views[viewName].classList.add('active');
             document.getElementById('btn-back-to-list').style.display = viewName === 'reader' ? 'block' : 'none';
+            document.getElementById('btn-manage-assets').style.display = viewName === 'reader' ? 'block' : 'none';
             document.getElementById('btn-new-project').style.display = viewName === 'list' ? 'block' : 'none';
+            readerCornerActions.style.display = viewName === 'reader' ? 'flex' : 'none';
+            assetManager.classList.remove('active');
+            
+            if (viewName !== 'reader' && document.fullscreenElement) {
+                document.exitFullscreen();
+            }
         }
 
         async function renderDashboard() {
@@ -426,6 +537,39 @@
                 grid.appendChild(card);
             });
         }
+
+        async function renderAssetList() {
+            assetList.innerHTML = '';
+            comicPages.forEach((page, idx) => {
+                const item = document.createElement('div');
+                item.className = 'asset-item';
+                item.innerHTML = `
+                    <div class="asset-info" style="cursor: pointer" onclick="jumpToPage(${idx})">
+                        <b>Page ${idx + 1}:</b> <span style="color: #777; font-size: 0.7rem;">${page.name}</span>
+                    </div>
+                    <button class="asset-delete-btn" onclick="handleDeletePage(${page.id}, event)">Delete</button>
+                `;
+                assetList.appendChild(item);
+            });
+        }
+
+        window.jumpToPage = (idx) => {
+            currentIndex = idx;
+            updateReader();
+            assetManager.classList.remove('active');
+        };
+
+        window.handleDeletePage = async (pageId, e) => {
+            e.stopPropagation();
+            if(confirm("Delete this page?")) {
+                await deletePage(pageId);
+                comicPages = await getPagesByProject(currentProjectId);
+                if (currentIndex >= comicPages.length) currentIndex = Math.max(0, comicPages.length - 1);
+                updateReader();
+                renderAssetList();
+                showToast("PAGE DELETED 🗑️");
+            }
+        };
 
         async function openProject(id, lastIndex) {
             currentProjectId = id;
@@ -470,11 +614,44 @@
             root.style.setProperty('--glow-br', getRGBA(12));
         }
 
+        /** 🖥️ FULLSCREEN LOGIC **/
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    showToast("FULLSCREEN ERROR ❌");
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                document.body.classList.add('is-fullscreen');
+                btnFullscreen.innerText = "⛶"; // Keep icon but add style if needed
+                btnFullscreen.style.borderColor = "var(--mint)";
+            } else {
+                document.body.classList.remove('is-fullscreen');
+                btnFullscreen.innerText = "⛶";
+                btnFullscreen.style.borderColor = "var(--glass-border)";
+            }
+        });
+
+        btnFullscreen.onclick = toggleFullscreen;
+
         document.getElementById('btn-new-project').onclick = () => modal.style.display = 'flex';
         document.getElementById('btn-modal-cancel').onclick = () => modal.style.display = 'none';
         document.getElementById('btn-go-home').onclick = () => switchView('list');
         document.getElementById('btn-back-to-list').onclick = () => { switchView('list'); renderDashboard(); };
         
+        document.getElementById('btn-manage-assets').onclick = () => {
+            assetManager.classList.toggle('active');
+            renderAssetList();
+        };
+        document.getElementById('btn-close-manager').onclick = () => assetManager.classList.remove('active');
+
         document.getElementById('btn-modal-save').onclick = async () => {
             const name = document.getElementById('input-project-name').value;
             if (name) {
@@ -494,25 +671,20 @@
             }
         };
 
-        document.getElementById('btn-upload-trigger').onclick = () => document.getElementById('file-input').click();
+        document.getElementById('btn-reader-upload').onclick = () => document.getElementById('file-input').click();
+        document.getElementById('btn-add-more').onclick = () => document.getElementById('file-input').click();
         
-        /**
-         * FIX: Async Handler for File Input
-         * Uses 'await' to ensure database work is done before reloading.
-         */
         document.getElementById('file-input').onchange = async (e) => {
             const files = Array.from(e.target.files);
             if (files.length > 0) {
                 showToast("SYNCING ASSETS...");
                 try {
-                    await addPages(currentProjectId, files); // WAIT for actual finish
+                    await addPages(currentProjectId, files);
                     comicPages = await getPagesByProject(currentProjectId);
                     updateReader();
+                    renderAssetList();
                     showToast("SYNC COMPLETE ✨");
-                } catch (err) {
-                    showToast("SYNC FAILED ❌");
-                    console.error(err);
-                }
+                } catch (err) { showToast("SYNC FAILED ❌"); }
             }
         };
 
@@ -522,6 +694,7 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === "ArrowLeft") document.getElementById('prev-btn').click();
             if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); document.getElementById('next-btn').click(); }
+            if (e.key === "f" || e.key === "F") toggleFullscreen();
         });
 
         window.onload = async () => {
