@@ -2,274 +2,429 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The 10/10 Incandescent Heart - Sensory Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>제림 & 진우</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { margin: 0; background-color: #000; overflow: hidden; }
-        canvas { display: block; }
-        
-        /* The Dedication Overlay */
-        #dedication {
-            position: absolute;
-            top: 40px;
-            width: 100%;
-            padding: 0 20px;
-            box-sizing: border-box;
-            text-align: center;
-            color: #ff4da6;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 1.1rem;
-            font-weight: 300;
-            letter-spacing: 1px;
-            pointer-events: none;
-            text-shadow: 0 0 10px #ff4da6, 0 0 20px #ff4da6;
-            z-index: 10;
-            line-height: 1.4;
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;700&family=Noto+Sans+KR:wght@500;700&display=swap');
+
+        :root {
+            --blue: #3b82f6;
+            --pink: #ec4899;
+            --red: #ef4444;
+            --purple: #8b5cf6;
+            --white: #ffffff;
+            --bg-gradient: linear-gradient(135deg, #1e3a8a 0%, #4c1d95 50%, #881337 100%);
         }
 
-        #dedication .name {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin: 0 5px;
-            text-shadow: 0 0 15px #ff4da6, 0 0 30px #ff4da6, 0 0 45px #ff4da6;
-            display: inline-block;
+        body, html {
+            margin: 0; padding: 0; 
+            width: 100%; height: 100dvh; 
+            overflow: hidden; 
+            font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--white);
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* Revised Visibility for Sensory Instructions */
-        #instructions {
-            position: absolute;
-            bottom: 30px;
-            width: 100%;
-            text-align: center;
-            color: #ff4da6;
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            font-size: 0.75rem;
-            font-weight: 400;
-            letter-spacing: 2px;
-            pointer-events: none;
-            text-transform: uppercase;
-            opacity: 1;
-            text-shadow: 0 0 8px #ff4da6;
-            z-index: 10;
+        #main-content { 
+            height: 100%; width: 100%; 
+            display: flex; flex-direction: column;
+            opacity: 0; transition: opacity 0.5s; visibility: hidden; 
         }
+        #main-content.ready { opacity: 1; visibility: visible; }
+
+        .view { flex: 1; display: none; flex-direction: column; overflow: hidden; width: 100%; }
+        .view.active { display: flex; }
+
+        /* JAY CHARACTER */
+        .jay-character-root {
+            position: relative; width: 80px; height: 120px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .teddy-head { position: relative; width: 50px; height: 46px; background: #a5673f; border-radius: 50%; z-index: 20; }
+        .ear { position: absolute; width: 18px; height: 18px; background: #a5673f; border-radius: 50%; top: -4px; }
+        .ear.left { left: -4px; } .ear.right { right: -4px; }
+        .hat { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 36px; height: 14px; background: var(--purple); border-radius: 6px 6px 2px 2px; z-index: 25; }
+        .hat::after { content: ''; position: absolute; bottom: -3px; left: -5px; width: 46px; height: 5px; background: var(--blue); border-radius: 8px; }
+        .face { position: absolute; inset: 0; }
+        .eye { position: absolute; width: 5px; height: 5px; background: #222; border-radius: 50%; top: 20px; }
+        .eye.left { left: 14px; } .eye.right { right: 14px; }
+        .snout { position: absolute; width: 18px; height: 14px; background: #e9d5b7; border-radius: 50%; bottom: 10px; left: 50%; transform: translateX(-50%); }
+        .snout::after { content: ''; position: absolute; width: 5px; height: 3px; background: #222; border-radius: 50%; top: 3px; left: 6px; }
+        .teddy-body { 
+            position: relative; width: 44px; height: 45px; 
+            background: var(--white); border-radius: 18px; 
+            margin-top: -6px; border: 2px solid #8b5a2b; 
+            display: flex; align-items: center; justify-content: center; z-index: 10; 
+        }
+        .teddy-body::before { content: 'Jay'; color: var(--pink); font-size: 10px; font-weight: 800; }
+        .limb { position: absolute; background: #a5673f; border: 1px solid #8b5a2b; }
+        .arm { width: 12px; height: 24px; top: 48px; border-radius: 10px; z-index: 15; }
+        .arm.left { left: 12px; transform-origin: top center; transform: rotate(25deg); }
+        .arm.right { right: 12px; transform-origin: top center; transform: rotate(-25deg); }
+        .leg { width: 16px; height: 22px; bottom: 20px; border-radius: 8px; z-index: 5; }
+        .leg.left { left: 20px; } 
+        .leg.right { left: 44px; }
+
+        @keyframes wave { from { transform: rotate(25deg); } to { transform: rotate(80deg); } }
+
+        /* LOADING SCREEN GREETING */
+        .jay-bubble {
+            position: absolute; top: -40px; right: -60px;
+            background: white; color: black; padding: 5px 12px;
+            border-radius: 15px; font-size: 12px; font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            white-space: nowrap; z-index: 100;
+        }
+        .jay-bubble::after {
+            content: ''; position: absolute; bottom: -5px; left: 10px;
+            border-left: 5px solid transparent; border-right: 5px solid transparent;
+            border-top: 5px solid white;
+        }
+
+        #loading-screen { position: fixed; inset: 0; background: var(--bg-gradient); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        #loading-screen.hidden { display: none !important; }
+
+        /* CHAT BUBBLES */
+        #msgBox { 
+            flex: 1; overflow-y: auto; padding: 1rem; 
+            display: flex; flex-direction: column; gap: 0.75rem;
+            scroll-behavior: smooth;
+        }
+
+        .date-header {
+            display: flex; align-items: center; justify-content: center;
+            margin: 1.5rem 0; font-size: 12px; font-weight: bold;
+            color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px;
+        }
+        .date-header::before, .date-header::after {
+            content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.1); margin: 0 1rem;
+        }
+
+        .msg-wrapper { position: relative; display: flex; flex-direction: column; max-width: 85%; }
+        .msg-wrapper.sent { align-self: flex-end; }
+        .msg-wrapper.received { align-self: flex-start; }
+
+        .msg-bubble { 
+            padding: 0.75rem 1rem; 
+            font-size: 1rem; 
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        .sent .msg-bubble { background: linear-gradient(135deg, var(--red), var(--pink)); border-radius: 20px 20px 4px 20px; color: white; }
+        .received .msg-bubble { background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 20px 20px 20px 4px; color: white; border: 1px solid rgba(255,255,255,0.1); }
+
+        .msg-info { font-size: 10px; margin-top: 4px; opacity: 0.5; display: flex; gap: 8px; }
+        .sent .msg-info { justify-content: flex-end; }
+
+        /* INPUT AREA */
+        .input-area { 
+            background: rgba(0, 0, 0, 0.4); 
+            backdrop-filter: blur(20px); 
+            padding: 0.75rem; 
+            border-top: 1px solid rgba(255, 255, 255, 0.1); 
+        }
+
+        .input-container {
+            display: flex; align-items: flex-end; gap: 8px;
+            background: rgba(255,255,255,0.1); border-radius: 20px;
+            padding: 6px 10px; border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        #msgInput {
+            flex: 1; background: transparent; border: none; outline: none;
+            color: white; padding: 6px; font-size: 1rem;
+            max-height: 120px; overflow-y: auto; resize: none;
+        }
+
+        /* NAVIGATION */
+        .nav-bar { 
+            height: 65px; background: rgba(0,0,0,0.3); 
+            display: flex; justify-content: space-around; align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; opacity: 0.4; transition: 0.2s; cursor: pointer; }
+        .nav-btn.active { opacity: 1; color: var(--pink); }
+
+        /* MODALS */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 11000; display: none; items-center: center; justify-content: center; padding: 20px; }
+        .modal-card { background: #111; border: 1px solid rgba(255,255,255,0.1); border-radius: 30px; width: 100%; max-width: 350px; padding: 30px; }
     </style>
 </head>
 <body>
-    <div id="dedication">
-        Made especially for <span class="name">재림님</span>, 고마워요 for being my first 한국 친구 / 선생님
-    </div>
-    <!-- The Updated Sensory Instructions -->
-    <div id="instructions">Click the heart and tilt it, and it will find its way back • ZOOM to FEEL the HEART • Brightness at 100% for best view</div>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-    
-    <script>
-        let scene, camera, renderer, composer, heartGroup, particleSystem;
-        const pinkColor = 0xff4da6;
 
-        const motion = {
-            amplitude: 15,
-            speed: 0.001,
-            rotationSpeed: 0.012,
-            recoverySpeed: 0.05
+    <div id="loading-screen">
+        <div class="flex flex-col items-center gap-6">
+             <div class="jay-character-root" style="transform: scale(1.4);">
+                <div class="jay-bubble">안녕 친구</div>
+                <div class="teddy-head"><div class="ear left"></div><div class="ear right"></div><div class="hat"></div><div class="face"><div class="eye left"></div><div class="eye right"></div><div class="snout"></div></div></div>
+                <div class="teddy-body"></div>
+                <div class="limb arm left" style="animation: wave 0.8s infinite alternate;"></div>
+                <div class="limb arm right"></div>
+                <div class="limb leg left"></div><div class="limb leg right"></div>
+            </div>
+            <div class="text-4xl font-bold text-red-500 tracking-tighter mt-4" style="font-family: 'Noto Sans KR';">지옥 친구</div>
+            <div class="font-medium opacity-60 animate-pulse">Initializing Global Link...</div>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <div id="view-archive" class="view active">
+            <header class="p-6 text-center">
+                <h1 class="font-bold text-2xl tracking-tight">Diary Vault</h1>
+                <p class="opacity-40 text-sm mt-1" id="dateStr"></p>
+            </header>
+            
+            <div class="flex-1 overflow-y-auto px-6 py-4 flex flex-col items-center gap-6">
+                <div class="jay-character-root" style="transform: scale(1.1);">
+                    <div class="teddy-head"><div class="ear left"></div><div class="ear right"></div><div class="hat"></div><div class="face"><div class="eye left"></div><div class="eye right"></div><div class="snout"></div></div></div>
+                    <div class="teddy-body"></div>
+                    <div class="limb arm left"></div><div class="limb arm right"></div>
+                    <div class="limb leg left"></div><div class="limb leg right"></div>
+                </div>
+
+                <div class="w-full max-w-sm flex flex-col gap-4">
+                    <!-- Start New Chat Button -->
+                    <button onclick="switchToChat()" class="w-full bg-gradient-to-r from-red-600 to-pink-600 p-4 rounded-2xl flex items-center justify-center gap-3 font-bold shadow-xl hover:opacity-90 active:scale-95 transition-all mb-2">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Start New Chat</span>
+                    </button>
+                    
+                    <div id="folderList" class="flex flex-col gap-4">
+                        <!-- Folders generated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-chat" class="view">
+            <header class="p-4 flex items-center justify-between border-b border-white/5 bg-black/30 backdrop-blur-xl">
+                <button onclick="switchToArchive()" class="w-10 h-10 flex items-center justify-center rounded-full active:bg-white/10"><i class="fa-solid fa-chevron-left"></i></button>
+                <div class="text-center">
+                    <span class="font-bold text-lg block leading-none">제림 & 진우 Sanctuary</span>
+                </div>
+                <div class="w-10"></div>
+            </header>
+            
+            <main id="msgBox"></main>
+
+            <div class="input-area">
+                <div class="input-container">
+                    <textarea id="msgInput" rows="1" placeholder="Type a message..." oninput="autoResize(this)"></textarea>
+                    <button id="sendBtn" class="bg-pink-600 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-all"><i class="fa-solid fa-paper-plane text-sm"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <nav class="nav-bar">
+            <div class="nav-btn active" id="nav-archive" onclick="switchToArchive()">
+                <i class="fa-solid fa-folder-open text-xl"></i><span class="text-[10px] mt-1 font-bold">Archive</span>
+            </div>
+            <div class="nav-btn" id="nav-chat" onclick="switchToChat()">
+                <i class="fa-solid fa-message text-xl"></i><span class="text-[10px] mt-1 font-bold">Sanctuary</span>
+            </div>
+        </nav>
+    </div>
+
+    <!-- MODALS -->
+    <div id="deleteModal" class="modal-overlay">
+        <div class="modal-card text-center">
+            <h3 class="font-bold text-xl mb-2 text-red-500">Vanish Message?</h3>
+            <p class="text-white/50 text-sm mb-8">This whisper will be removed forever.</p>
+            <div class="flex gap-3">
+                <button onclick="closeModal('deleteModal')" class="flex-1 py-3 rounded-xl bg-white/5 font-bold text-sm">Cancel</button>
+                <button id="confirmDeleteBtn" class="flex-1 py-3 rounded-xl bg-red-600 font-bold text-sm">Vanish</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 class="font-bold text-lg mb-4">Edit Whisper</h3>
+            <textarea id="editInput" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white outline-none mb-6 text-sm" rows="5"></textarea>
+            <div class="flex gap-3">
+                <button onclick="closeModal('editModal')" class="flex-1 py-3 rounded-xl bg-white/5 font-bold text-sm">Cancel</button>
+                <button id="confirmEditBtn" class="flex-1 py-3 rounded-xl bg-blue-600 font-bold text-sm">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, collection, addDoc, query, onSnapshot, orderBy, serverTimestamp, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'global-sanctuary-v1';
+
+        let currentUser = null;
+        let deleteId = null;
+        let editId = null;
+
+        window.autoResize = (el) => {
+            el.style.height = 'auto';
+            el.style.height = (el.scrollHeight) + 'px';
         };
 
-        function init() {
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 60;
+        window.closeModal = (id) => { document.getElementById(id).style.display = 'none'; };
 
-            renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.toneMapping = THREE.ReinhardToneMapping;
-            renderer.toneMappingExposure = 1.5;
-            document.body.appendChild(renderer.domElement);
+        window.switchToChat = () => {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-chat').classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('nav-chat').classList.add('active');
+            const box = document.getElementById('msgBox'); 
+            box.scrollTop = box.scrollHeight;
+        };
 
-            const renderScene = new THREE.RenderPass(scene, camera);
-            const bloomPass = new THREE.UnrealBloomPass(
-                new THREE.Vector2(window.innerWidth, window.innerHeight),
-                2.5, 0.5, 0.1
-            );
+        window.switchToArchive = () => {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-archive').classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('nav-archive').classList.add('active');
+        };
 
-            composer = new THREE.EffectComposer(renderer);
-            composer.addPass(renderScene);
-            composer.addPass(bloomPass);
-
-            heartGroup = new THREE.Group();
-            scene.add(heartGroup);
-
-            const depthLayers = 24;
-            for (let i = 0; i < depthLayers; i++) {
-                const zNorm = (i / (depthLayers - 1) - 0.5) * 2;
-                const z = zNorm * 6;
-                const scale = Math.sqrt(1 - Math.pow(zNorm, 2));
-                createOrthogonalHeartProfile(z, pinkColor, scale);
-            }
-            createStruts(pinkColor, 72);
-            createSparks();
-
-            window.addEventListener('resize', onWindowResize, false);
-            setupInteractivity();
-            animate();
-        }
-
-        function getHeartPoint(t) {
-            const x = 16 * Math.pow(Math.sin(t), 3);
-            const y = (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
-            return { x, y };
-        }
-
-        function createOrthogonalHeartProfile(z, color, scale) {
-            const points = [];
-            const resolution = 120;
-            const start = getHeartPoint(0);
-            let prevX = start.x * scale;
-            let prevY = start.y * scale;
-
-            for (let i = 0; i <= resolution; i++) {
-                const t = (i / resolution) * Math.PI * 2;
-                const p = getHeartPoint(t);
-                const tx = p.x * scale;
-                const ty = p.y * scale;
-                points.push(new THREE.Vector3(tx, prevY, z));
-                points.push(new THREE.Vector3(tx, ty, z));
-                prevX = tx;
-                prevY = ty;
-            }
-
-            const geometry = new THREE.BufferGeometry().setFromPoints(points);
-            const material = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
-            heartGroup.add(new THREE.Line(geometry, material));
-        }
-
-        function createStruts(color, count) {
-            for (let i = 0; i < count; i++) {
-                const t = (i / count) * Math.PI * 2;
-                const p = getHeartPoint(t);
-                const points = [];
-                const segments = 10;
-                for(let j=0; j<=segments; j++) {
-                    const zNorm = (j/segments - 0.5) * 2;
-                    const scale = Math.sqrt(1 - Math.pow(zNorm, 2));
-                    points.push(new THREE.Vector3(p.x * scale, p.y * scale, zNorm * 6));
-                }
-                const geometry = new THREE.BufferGeometry().setFromPoints(points);
-                const material = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: 0.2 });
-                heartGroup.add(new THREE.Line(geometry, material));
-            }
-        }
-
-        function createSparks() {
-            const particleCount = 2000;
-            const geometry = new THREE.BufferGeometry();
-            const positions = new Float32Array(particleCount * 3);
-            const velocities = new Float32Array(particleCount * 3);
-            const lifetimes = new Float32Array(particleCount);
-
-            for (let i = 0; i < particleCount; i++) {
-                resetParticle(i, positions, velocities, lifetimes);
-            }
-
-            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            const material = new THREE.PointsMaterial({
-                color: pinkColor, size: 0.25, transparent: true, opacity: 1, blending: THREE.AdditiveBlending, sizeAttenuation: true
-            });
-
-            particleSystem = new THREE.Points(geometry, material);
-            heartGroup.add(particleSystem);
-            particleSystem.userData = { velocities, lifetimes };
-        }
-
-        function resetParticle(i, positions, velocities, lifetimes) {
-            const t = Math.random() * Math.PI * 2;
-            const p = getHeartPoint(t);
-            const zNorm = (Math.random() - 0.5) * 2;
-            const scale = Math.sqrt(1 - Math.pow(zNorm, 2)) * 0.9;
-            positions[i * 3] = p.x * scale;
-            positions[i * 3 + 1] = p.y * scale;
-            positions[i * 3 + 2] = zNorm * 6;
-            const speed = 0.02 + Math.random() * 0.08;
-            velocities[i * 3] = (Math.random() - 0.5) * speed;
-            velocities[i * 3 + 1] = (Math.random() - 0.5) * speed;
-            velocities[i * 3 + 2] = (Math.random() - 0.5) * speed;
-            lifetimes[i] = Math.random();
-        }
-
-        function updateParticles() {
-            const positions = particleSystem.geometry.attributes.position.array;
-            const { velocities, lifetimes } = particleSystem.userData;
-            for (let i = 0; i < lifetimes.length; i++) {
-                const angle = Date.now() * 0.001;
-                positions[i * 3] += velocities[i * 3] + Math.sin(angle + i) * 0.01;
-                positions[i * 3 + 1] += velocities[i * 3 + 1] + Math.cos(angle + i) * 0.01;
-                positions[i * 3 + 2] += velocities[i * 3 + 2];
-                lifetimes[i] -= 0.005;
-                if (lifetimes[i] <= 0) resetParticle(i, positions, velocities, lifetimes);
-            }
-            particleSystem.geometry.attributes.position.needsUpdate = true;
-        }
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            composer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        let isDragging = false;
-        let previousMousePosition = { x: 0, y: 0 };
-        function setupInteractivity() {
-            const onStart = (x, y) => {
-                isDragging = true;
-                previousMousePosition = { x, y };
-            };
-            const onMove = (x, y) => {
-                if (isDragging) {
-                    const deltaX = x - previousMousePosition.x;
-                    const deltaY = y - previousMousePosition.y;
-                    heartGroup.rotation.y += deltaX * 0.01;
-                    heartGroup.rotation.x += deltaY * 0.01;
-                }
-                previousMousePosition = { x, y };
-            };
-            const onEnd = () => isDragging = false;
-
-            document.addEventListener('mousedown', (e) => onStart(e.clientX, e.clientY));
-            document.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
-            document.addEventListener('mouseup', onEnd);
+        async function init() {
+            const today = new Date();
+            document.getElementById('dateStr').innerText = today.toLocaleDateString('en-IN', { weekday: 'long', month: 'long', day: 'numeric' });
             
-            document.addEventListener('touchstart', (e) => onStart(e.touches[0].clientX, e.touches[0].clientY));
-            document.addEventListener('touchmove', (e) => onMove(e.touches[0].clientX, e.touches[0].clientY));
-            document.addEventListener('touchend', onEnd);
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
+            }
 
-            document.addEventListener('wheel', (e) => {
-                camera.position.z += e.deltaY * 0.05;
-                camera.position.z = Math.max(10, Math.min(200, camera.position.z));
+            onAuthStateChanged(auth, (user) => { 
+                if (user) { 
+                    currentUser = user; 
+                    document.getElementById('loading-screen').classList.add('hidden');
+                    document.getElementById('main-content').classList.add('ready');
+                    loadMessages();
+                } 
             });
         }
 
-        function animate() {
-            requestAnimationFrame(animate);
-            const time = Date.now();
+        function loadMessages() {
+            const q = query(collection(db, 'artifacts', appId, 'public', 'data', 'messages'), orderBy('timestamp', 'asc'));
+            
+            onSnapshot(q, (snap) => {
+                const box = document.getElementById('msgBox');
+                const folderList = document.getElementById('folderList');
+                box.innerHTML = '';
+                folderList.innerHTML = '';
+                
+                let lastDate = "";
+                const uniqueDates = new Set();
 
-            heartGroup.position.x = Math.sin(time * motion.speed) * motion.amplitude;
+                snap.forEach(d => {
+                    const m = d.data();
+                    const isOwn = m.sender === currentUser?.uid;
+                    const dateObj = m.timestamp ? m.timestamp.toDate() : new Date();
+                    const dateStr = dateObj.toLocaleDateString('en-IN', { month: 'long', day: 'numeric', year: 'numeric' });
+                    
+                    if (dateStr !== lastDate) {
+                        const header = document.createElement('div');
+                        header.className = 'date-header';
+                        header.innerText = dateStr;
+                        box.appendChild(header);
+                        lastDate = dateStr;
+                    }
 
-            if (!isDragging) {
-                heartGroup.rotation.x = THREE.MathUtils.lerp(heartGroup.rotation.x, 0, motion.recoverySpeed);
-                heartGroup.rotation.z = THREE.MathUtils.lerp(heartGroup.rotation.z, 0, motion.recoverySpeed);
-                heartGroup.rotation.y += motion.rotationSpeed;
-            }
+                    uniqueDates.add(dateStr);
 
-            updateParticles();
-            composer.render();
+                    const wrap = document.createElement('div');
+                    wrap.className = `msg-wrapper ${isOwn ? 'sent' : 'received'}`;
+                    const time = m.timestamp ? m.timestamp.toDate().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : 'Now';
+                    
+                    wrap.innerHTML = `
+                        <div class="msg-bubble">${m.text}</div>
+                        <div class="msg-info">
+                            <span>${time}</span>
+                            ${isOwn ? `<span class="cursor-pointer font-bold" onclick="window.triggerEdit('${d.id}', \`${m.text.replace(/`/g, '\\`')}\`)">Edit</span>` : ''}
+                            ${isOwn ? `<span class="cursor-pointer font-bold" onclick="window.triggerDelete('${d.id}')">Delete</span>` : ''}
+                        </div>
+                    `;
+                    box.appendChild(wrap);
+                });
+
+                [...uniqueDates].reverse().forEach(date => {
+                    const folder = document.createElement('div');
+                    folder.className = "bg-white/5 border border-white/10 p-4 rounded-2xl flex items-center justify-between cursor-pointer hover:bg-white/10 transition-all";
+                    folder.onclick = () => window.switchToChat();
+                    folder.innerHTML = `
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-pink-500/20 text-pink-500 rounded-xl flex items-center justify-center"><i class="fa-solid fa-folder"></i></div>
+                            <div>
+                                <h4 class="font-bold text-sm">${date}</h4>
+                                <p class="text-[10px] opacity-40">Encrypted Whisper Log</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-[10px] opacity-30"></i>
+                    `;
+                    folderList.appendChild(folder);
+                });
+
+                box.scrollTop = box.scrollHeight;
+            }, (err) => {
+                console.error("Link unstable, retrying...", err);
+            });
         }
+
+        const sendMessage = async () => {
+            const input = document.getElementById('msgInput');
+            const text = input.value.trim();
+            if (!text || !currentUser) return;
+            input.value = '';
+            input.style.height = 'auto';
+            
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'messages'), {
+                    text, sender: currentUser.uid, timestamp: serverTimestamp()
+                });
+            } catch (e) {
+                console.error("Error:", e);
+            }
+        };
+
+        document.getElementById('sendBtn').onclick = sendMessage;
+        document.getElementById('msgInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        window.triggerEdit = (id, text) => {
+            editId = id;
+            document.getElementById('editInput').value = text;
+            document.getElementById('editModal').style.display = 'flex';
+        };
+        document.getElementById('confirmEditBtn').onclick = async () => {
+            const text = document.getElementById('editInput').value.trim();
+            if (editId && text) {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', editId), { text });
+                closeModal('editModal');
+            }
+        };
+
+        window.triggerDelete = (id) => {
+            deleteId = id;
+            document.getElementById('deleteModal').style.display = 'flex';
+        };
+        document.getElementById('confirmDeleteBtn').onclick = async () => {
+            if (deleteId) {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', deleteId));
+                closeModal('deleteModal');
+            }
+        };
 
         window.onload = init;
     </script>
