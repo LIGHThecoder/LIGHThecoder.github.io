@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NM PLAY - Music Player</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: cyan; }
+        .glow-effect {
+            transition: transform 0.05s ease-out, box-shadow 0.05s ease-out, filter 0.05s ease-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-[#0a0212] text-white font-sans selection:bg-cyan-400 selection:text-black overflow-hidden">
+    <!-- Background Effects -->
+    <div class="fixed inset-0 pointer-events-none z-0">
+        <div class="absolute top-[-10%] left-[-5%] w-[70%] h-[70%] bg-blue-700/40 blur-[120px] rounded-full animate-pulse"></div>
+        <div class="absolute bottom-[-10%] right-[-5%] w-[70%] h-[70%] bg-violet-800/40 blur-[120px] rounded-full animate-pulse"></div>
+        <div class="absolute top-[20%] right-[10%] w-[50%] h-[50%] bg-fuchsia-600/20 blur-[100px] rounded-full"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="relative z-10 flex h-screen p-4 gap-4">
+        <!-- Sidebar -->
+        <aside class="w-20 md:w-72 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] flex flex-col overflow-hidden shadow-2xl">
+            <div class="p-8 flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-400 via-blue-500 to-violet-600 flex items-center justify-center shadow-[0_0_20px_rgba(34,211,238,0.4)]">
+                    <i data-lucide="zap" class="fill-white text-white" style="width: 24px; height: 24px;"></i>
+                </div>
+                <span class="hidden md:block text-2xl font-black italic tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white via-cyan-200 to-blue-400">NM PLAY</span>
+            </div>
+
+            <nav class="flex-1 px-4 space-y-3">
+                <button onclick="showHome()" id="homeBtn" class="w-full flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 bg-white/10 text-cyan-400 border border-white/10">
+                    <i data-lucide="waves" style="width: 22px; height: 22px;"></i>
+                    <span class="hidden md:block font-black uppercase text-xs tracking-widest">Feed</span>
+                </button>
+                <button onclick="showAlbumModal()" class="w-full flex items-center gap-4 p-4 rounded-2xl text-white/40 hover:bg-cyan-500/10 hover:text-cyan-400 transition-all group">
+                    <i data-lucide="plus" class="group-hover:rotate-90 transition-transform" style="width: 22px; height: 22px;"></i>
+                    <span class="hidden md:block font-black uppercase text-xs tracking-widest">Drop Album</span>
+                </button>
+            </nav>
+
+            <div class="p-6">
+                <div class="bg-gradient-to-br from-violet-600 to-blue-700 p-4 rounded-3xl hidden md:block">
+                    <p class="text-[10px] font-black uppercase tracking-widest mb-2 opacity-70">Aura Level</p>
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 bg-cyan-400 rounded-full animate-ping"></div>
+                        <span class="text-xs font-bold uppercase">Peak Fiction</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col overflow-hidden gap-4">
+            <!-- Header -->
+            <header class="h-20 bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2rem] flex items-center justify-between px-8 shadow-xl">
+                <div class="flex items-center gap-4">
+                    <button onclick="showHome()" id="backBtn" class="hidden p-2 bg-white/5 hover:bg-white/10 rounded-full transition-all">
+                        <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+                    </button>
+                    <h2 id="viewTitle" class="text-2xl font-black tracking-tighter uppercase italic">The Multiverse</h2>
+                </div>
+                <div class="hidden sm:flex items-center gap-2 bg-black/20 px-4 py-2 rounded-full border border-white/5">
+                    <i data-lucide="search" class="text-white/40" style="width: 16px; height: 16px;"></i>
+                    <input placeholder="Search Vibes..." class="bg-transparent border-none focus:outline-none text-sm w-48" />
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div id="contentArea" class="flex-1 overflow-y-auto custom-scrollbar pr-2">
+                <!-- Home View -->
+                <div id="homeView" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <button onclick="showAlbumModal()" class="aspect-square rounded-[3rem] border-2 border-dashed border-white/20 flex flex-col items-center justify-center gap-4 text-white/20 hover:border-cyan-400 hover:text-cyan-400 transition-all group bg-white/5">
+                        <i data-lucide="plus" style="width: 32px; height: 32px;"></i>
+                        <span class="font-black text-[10px] uppercase tracking-[0.3em]">Manifest Album</span>
+                    </button>
+                </div>
+
+                <!-- Album Detail View -->
+                <div id="albumView" class="hidden flex-col lg:flex-row gap-6">
+                    <div class="flex-1 space-y-4">
+                        <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-8">
+                            <div class="flex items-center justify-between mb-8">
+                                <h3 class="text-2xl font-black italic tracking-tighter uppercase flex items-center gap-3">
+                                    Tracklist 
+                                    <i data-lucide="flame" class="text-orange-500" style="width: 24px; height: 24px;"></i>
+                                </h3>
+                                <button onclick="showSongModal()" class="bg-cyan-400 text-black px-6 py-3 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-all">Add Track</button>
+                            </div>
+                            <div id="songList" class="space-y-2">
+                                <p class="text-white/40 text-center py-8">No tracks yet. Add some!</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-80 space-y-4">
+                        <div class="bg-gradient-to-br from-violet-600 to-blue-700 border border-white/10 rounded-[2.5rem] p-8 shadow-2xl">
+                            <div class="flex items-center gap-2 mb-6 text-white/50 uppercase text-[10px] font-black tracking-[0.2em]">
+                                <i data-lucide="file-text" style="width: 14px; height: 14px;"></i> 
+                                The Lyric Bible
+                            </div>
+                            <div id="lyricsDisplay" class="text-lg leading-relaxed font-bold italic text-white/90 whitespace-pre-wrap h-[400px] overflow-y-auto custom-scrollbar pr-2">
+                                Waiting for the vibes...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Player Footer -->
+            <footer class="bg-white/5 backdrop-blur-[50px] border border-white/10 rounded-[2.5rem] p-4 shadow-2xl">
+                <div class="flex items-center justify-between gap-4 mb-2">
+                    <div class="flex items-center gap-4 flex-1 min-w-0">
+                        <div id="albumArt" class="w-14 h-14 flex-shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-violet-900 to-blue-900 flex items-center justify-center shadow-2xl glow-effect">
+                            <i data-lucide="music" class="text-white/20" style="width: 28px; height: 28px;"></i>
+                        </div>
+                        <div class="overflow-hidden min-w-0 flex-1">
+                            <h5 id="nowPlayingTitle" class="font-bold text-sm truncate">No Track</h5>
+                            <p id="nowPlayingArtist" class="text-xs text-white/40 truncate">Pick a vibe</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center gap-3 flex-1">
+                        <div class="flex items-center gap-6">
+                            <button onclick="skipPrev()" class="text-white/60 hover:text-white transition-colors">
+                                <i data-lucide="skip-back" style="width: 20px; height: 20px;"></i>
+                            </button>
+                            <button onclick="togglePlay()" id="playBtn" class="w-10 h-10 bg-white text-black rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-30" disabled>
+                                <i data-lucide="play" class="ml-0.5" style="width: 20px; height: 20px; fill: black;"></i>
+                            </button>
+                            <button onclick="skipNext()" class="text-white/60 hover:text-white transition-colors">
+                                <i data-lucide="skip-forward" style="width: 20px; height: 20px;"></i>
+                            </button>
+                        </div>
+                        <div class="w-full flex items-center gap-2">
+                            <span id="currentTime" class="text-[10px] text-white/50 font-mono w-10 text-right">0:00</span>
+                            <div class="flex-1 h-1 bg-white/10 rounded-full overflow-hidden cursor-pointer group" onclick="seekAudio(event)">
+                                <div id="progressBar" class="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full transition-all" style="width: 0%"></div>
+                            </div>
+                            <span id="duration" class="text-[10px] text-white/50 font-mono w-10">0:00</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 flex-1 justify-end">
+                        <button onclick="openFullView()" class="text-white/60 hover:text-white transition-colors">
+                            <i data-lucide="maximize-2" style="width: 18px; height: 18px;"></i>
+                        </button>
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="volume-2" class="text-white/60" style="width: 18px; height: 18px;"></i>
+                            <input type="range" id="volumeSlider" min="0" max="100" value="70" class="w-20 h-1 bg-white/10 rounded-full appearance-none cursor-pointer" oninput="setVolume(this.value)" style="accent-color: #22d3ee;" />
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="audioPlayer" crossorigin="anonymous"></audio>
+
+    <!-- Album Modal -->
+    <div id="albumModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-6 bg-[#0a0212]/90 backdrop-blur-3xl">
+        <div class="bg-[#1a0b2e] border border-white/10 rounded-[4rem] w-full max-w-xl p-10 relative overflow-hidden">
+            <button onclick="hideModals()" class="absolute top-10 right-10 text-white/20 hover:text-white transition-all">
+                <i data-lucide="x" style="width: 32px; height: 32px;"></i>
+            </button>
+            <div class="space-y-8">
+                <h2 class="text-5xl font-black italic tracking-tighter uppercase leading-none">Manifest<br/><span class="text-cyan-400">Album</span></h2>
+                <input id="albumTitle" class="w-full bg-white/5 border border-white/10 p-6 rounded-3xl outline-none focus:border-cyan-400 text-xl font-bold" placeholder="ALBUM NAME..." />
+                <button onclick="createAlbum()" class="w-full bg-white text-black font-black py-6 rounded-3xl hover:bg-cyan-400 transition-all text-lg shadow-xl uppercase">Create Reality</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Song Modal -->
+    <div id="songModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-6 bg-[#0a0212]/90 backdrop-blur-3xl">
+        <div class="bg-[#1a0b2e] border border-white/10 rounded-[4rem] w-full max-w-xl p-10 relative overflow-hidden">
+            <button onclick="hideModals()" class="absolute top-10 right-10 text-white/20 hover:text-white transition-all">
+                <i data-lucide="x" style="width: 32px; height: 32px;"></i>
+            </button>
+            <div class="space-y-6">
+                <h2 class="text-4xl font-black italic tracking-tighter uppercase leading-none">Sync<br/><span class="text-violet-400">New Track</span></h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <input id="songTitle" class="bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-cyan-400 outline-none font-bold" placeholder="TITLE" />
+                    <input id="songArtist" class="bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-cyan-400 outline-none font-bold" placeholder="ARTIST" />
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="relative h-32 rounded-3xl border-2 border-dashed border-white/10 hover:border-cyan-400 transition-all flex flex-col items-center justify-center bg-white/5 cursor-pointer">
+                        <input type="file" accept="audio/*" onchange="handleAudioFile(event)" class="absolute inset-0 opacity-0 cursor-pointer" />
+                        <i data-lucide="upload" id="audioIcon" class="text-white/20" style="width: 24px; height: 24px;"></i>
+                        <span class="text-[10px] font-black mt-2 uppercase">Audio</span>
+                    </div>
+                    <div class="relative h-32 rounded-3xl border-2 border-dashed border-white/10 hover:border-violet-500 transition-all flex flex-col items-center justify-center bg-white/5 overflow-hidden">
+                        <input type="file" accept="image/*" onchange="handleImageFile(event)" class="absolute inset-0 opacity-0 cursor-pointer z-20" />
+                        <img id="imagePreview" class="hidden absolute inset-0 w-full h-full object-cover opacity-40" />
+                        <i data-lucide="image" class="z-10 text-white/20" style="width: 24px; height: 24px;"></i>
+                        <span class="text-[10px] font-black mt-2 uppercase z-10">Poster</span>
+                    </div>
+                </div>
+                <textarea id="songLyrics" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-cyan-400 outline-none h-24 resize-none" placeholder="LYRICS..."></textarea>
+                <button onclick="addSong()" class="w-full bg-gradient-to-r from-cyan-400 to-blue-600 text-black font-black py-6 rounded-3xl hover:scale-[1.05] transition-all shadow-2xl">DROP IT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Full Song View -->
+    <div id="fullView" class="fixed inset-0 z-[120] hidden items-start justify-center p-4 md:p-6 bg-black/80 backdrop-blur-3xl overflow-hidden">
+        <div class="bg-[#0b0b12] border border-white/10 rounded-[3rem] w-full max-w-6xl h-[90vh] p-6 md:p-8 relative overflow-hidden flex flex-col shadow-2xl">
+            <button onclick="closeFullView()" class="absolute top-6 right-6 text-white/50 hover:text-white transition-all z-10">
+                <i data-lucide="x" style="width: 28px; height: 28px;"></i>
+            </button>
+            
+            <!-- Top: Poster and Lyrics Side by Side - Equal Height, Independent -->
+            <div class="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 overflow-visible items-start">
+                <!-- Left: Album Art - Sticky at top -->
+                <div class="bg-white/5 border border-white/10 rounded-[2rem] p-5 md:p-6 flex items-start justify-center lg:sticky lg:top-0 h-fit">
+                    <div class="w-full max-w-full mx-auto">
+                        <div id="fullViewArtWrapper" class="relative rounded-[2rem] overflow-hidden bg-gradient-to-br from-violet-700 via-blue-700 to-cyan-500 shadow-2xl flex items-center justify-center glow-effect w-full h-full">
+                            <div id="fullViewArt" class="w-full aspect-[3/4] flex items-center justify-center bg-black/20">
+                                <i data-lucide="music" class="text-white/30" style="width: 64px; height: 64px;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right: Lyrics - Independent Scroll -->
+                <div class="bg-white/5 border border-white/10 rounded-[2rem] p-5 md:p-6 flex flex-col h-full overflow-hidden">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i data-lucide="music" class="text-white/50" style="width: 16px; height: 16px;"></i>
+                        <p class="text-[11px] uppercase tracking-[0.3em] text-white/50 font-black">Lyrics</p>
+                    </div>
+                    <div id="fullViewLyrics" class="flex-1 overflow-y-auto custom-scrollbar space-y-3">
+                        <p class="text-white/40 text-center py-8">No lyrics available...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bottom: Metadata only (controls removed) -->
+            <div class="bg-white/5 border border-white/10 rounded-[2rem] p-5 md:p-6 mt-auto">
+                <div class="text-center">
+                    <h2 id="fullViewTitle" class="text-2xl font-black tracking-tight">No Track</h2>
+                    <p id="fullViewArtist" class="text-sm uppercase tracking-[0.3em] text-white/50 mt-1">Pick a vibe</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // App State
+        let albums = [];
+        let currentAlbum = null;
+        let currentSong = null;
+        let isPlaying = false;
+        let currentSongData = { audioData: '', imageData: '' };
+        let audioContext = null;
+        let analyzer = null;
+        let audioSource = null;
+        let animationId = null;
+        let currentGlowColor = { r: 34, g: 211, b: 238 }; // default cyan
+        let parsedLyrics = [];
+        let currentLyricIndex = -1;
+
+        const audioElement = document.getElementById('audioPlayer');
+
+        // Initialize
+        function init() {
+            lucide.createIcons();
+            loadAlbums();
+            
+            audioElement.addEventListener('ended', () => {
+                // Stop auto-play: pause and wait for user to decide
+                isPlaying = false;
+                audioElement.pause();
+                updatePlayButton();
+            });
+            
+            audioElement.addEventListener('timeupdate', updateProgress);
+            audioElement.addEventListener('loadedmetadata', updateDuration);
+            audioElement.volume = 0.7;
+        }
+        
+        // Delete functions
+        function deleteAlbum(albumId) {
+            if (!confirm('Delete this album and all its tracks?')) return;
+            albums = albums.filter(a => a.id !== albumId);
+            saveAlbums();
+            renderHome();
+            if (currentAlbum && currentAlbum.id === albumId) {
+                currentAlbum = null;
+                if (currentSong) {
+                    audioElement.pause();
+                    currentSong = null;
+                    isPlaying = false;
+                    updatePlayButton();
+                }
+            }
+        }
+        
+        function deleteSong(songId) {
+            if (!currentAlbum || !confirm('Delete this track?')) return;
+            const albumIndex = albums.findIndex(a => a.id === currentAlbum.id);
+            if (albumIndex !== -1) {
+                albums[albumIndex].songs = albums[albumIndex].songs.filter(s => s.id !== songId);
+                currentAlbum = albums[albumIndex];
+                saveAlbums();
+                renderSongs();
+                renderHome();
+                if (currentSong && currentSong.id === songId) {
+                    audioElement.pause();
+                    currentSong = null;
+                    isPlaying = false;
+                    updatePlayButton();
+                }
+            }
+        }
+        
+        // Player control functions
+        function updateProgress() {
+            if (!audioElement.duration) return;
+            const percent = (audioElement.currentTime / audioElement.duration) * 100;
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('currentTime').textContent = formatTime(audioElement.currentTime);
+            
+            // Update full view progress
+            const fullViewProgressBar = document.getElementById('fullViewProgressBar');
+            const fullViewCurrentTime = document.getElementById('fullViewCurrentTime');
+            if (fullViewProgressBar) fullViewProgressBar.style.width = percent + '%';
+            if (fullViewCurrentTime) fullViewCurrentTime.textContent = formatTime(audioElement.currentTime);
+            
+            // Update synced lyrics
+            updateSyncedLyrics();
+        }
+        
+        function updateDuration() {
+            document.getElementById('duration').textContent = formatTime(audioElement.duration);
+            const fullViewDuration = document.getElementById('fullViewDuration');
+            if (fullViewDuration) fullViewDuration.textContent = formatTime(audioElement.duration);
+        }
+        
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return mins + ':' + (secs < 10 ? '0' : '') + secs;
+        }
+        
+        function seekAudio(event) {
+            if (!audioElement.duration) return;
+            const rect = event.currentTarget.getBoundingClientRect();
+            const percent = (event.clientX - rect.left) / rect.width;
+            audioElement.currentTime = percent * audioElement.duration;
+        }
+        
+        function setVolume(value) {
+            audioElement.volume = value / 100;
+        }
+
+        // Local Storage functions
+        function loadAlbums() {
+            const stored = localStorage.getItem('nmplay_albums');
+            if (stored) {
+                albums = JSON.parse(stored);
+                renderHome();
+            }
+        }
+
+        // Lyrics helpers
+        function parseLyrics(lyricsText) {
+            if (!lyricsText) return [];
+            const lines = lyricsText.split('\n');
+            const parsed = [];
+            let hasTimestamps = false;
+            
+            lines.forEach(line => {
+                // Check for LRC format: [mm:ss.xx] or [mm:ss]
+                const match = line.match(/^\[(\d+):(\d+(?:\.\d+)?)\](.*)$/);
+                if (match) {
+                    const minutes = parseInt(match[1]);
+                    const seconds = parseFloat(match[2]);
+                    const text = match[3].trim();
+                    const time = minutes * 60 + seconds;
+                    if (text) {
+                        parsed.push({ time, text });
+                        hasTimestamps = true;
+                    }
+                } else if (line.trim()) {
+                    // Plain text without timestamp
+                    parsed.push({ time: null, text: line.trim() });
+                }
+            });
+            
+            // If no timestamps, estimate timing (4 seconds per line)
+            if (!hasTimestamps && parsed.length > 0) {
+                parsed.forEach((lyric, index) => {
+                    lyric.time = index * 4; // 4 seconds per line
+                });
+            }
+            
+            return parsed;
+        }
+        
+        function updateSyncedLyrics() {
+            if (!audioElement || !currentSong || parsedLyrics.length === 0) return;
+            
+            // Offset by -11 seconds (highlights 11 seconds early)
+            const currentTime = audioElement.currentTime - 11;
+            let activeIndex = -1;
+            
+            // Find the current line (time should never be null after parsing)
+            for (let i = parsedLyrics.length - 1; i >= 0; i--) {
+                if (parsedLyrics[i].time <= currentTime) {
+                    activeIndex = i;
+                    break;
+                }
+            }
+            
+            // Always highlight first line at start if no match found
+            if (activeIndex === -1 && currentTime > 0) {
+                activeIndex = 0;
+            }
+            
+            if (activeIndex !== currentLyricIndex) {
+                currentLyricIndex = activeIndex;
+                renderSyncedLyrics(activeIndex);
+            }
+        }
+        
+        function renderSyncedLyrics(activeIndex) {
+            const lyricsContainer = document.getElementById('fullViewLyrics');
+            if (!lyricsContainer) return;
+            
+            if (parsedLyrics.length === 0) {
+                lyricsContainer.innerHTML = '<p class="text-white/40 text-center py-8">No lyrics available...</p>';
+                return;
+            }
+            
+            lyricsContainer.innerHTML = '';
+            const { r, g, b } = currentGlowColor;
+            
+            parsedLyrics.forEach((lyric, index) => {
+                const line = document.createElement('div');
+                line.className = `transition-all duration-500 text-lg leading-relaxed font-bold py-1 ${
+                    index === activeIndex 
+                        ? 'text-white scale-105' 
+                        : index < activeIndex 
+                            ? 'text-white/30' 
+                            : 'text-white/50'
+                }`;
+                line.textContent = lyric.text;
+                if (index === activeIndex) {
+                    line.style.textShadow = `0 0 20px rgba(${r}, ${g}, ${b}, 0.9), 0 0 30px rgba(${r}, ${g}, ${b}, 0.6), 0 0 40px rgba(${r}, ${g}, ${b}, 0.4)`;
+                    line.style.fontWeight = '900';
+                }
+                lyricsContainer.appendChild(line);
+                
+                // Auto-scroll to active line
+                if (index === activeIndex) {
+                    setTimeout(() => {
+                        line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
+                }
+            });
+        }
+        
+        // Color helpers
+        function setGlowColorFromImage(dataUrl) {
+            if (!dataUrl) {
+                currentGlowColor = { r: 34, g: 211, b: 238 }; // fallback cyan
+                return;
+            }
+
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 32;
+                canvas.height = 32;
+                ctx.drawImage(img, 0, 0, 32, 32);
+                const data = ctx.getImageData(0, 0, 32, 32).data;
+                let r = 0, g = 0, b = 0, count = 0;
+                for (let i = 0; i < data.length; i += 4) {
+                    r += data[i];
+                    g += data[i + 1];
+                    b += data[i + 2];
+                    count++;
+                }
+                currentGlowColor = {
+                    r: Math.round(r / count),
+                    g: Math.round(g / count),
+                    b: Math.round(b / count)
+                };
+            };
+            img.src = dataUrl;
+        }
+
+        function saveAlbums() {
+            localStorage.setItem('nmplay_albums', JSON.stringify(albums));
+        }
+
+        // View Management
+        function showHome() {
+            document.getElementById('homeView').classList.remove('hidden');
+            document.getElementById('albumView').classList.add('hidden');
+            document.getElementById('backBtn').classList.add('hidden');
+            document.getElementById('viewTitle').textContent = 'The Multiverse';
+            currentAlbum = null;
+            renderHome();
+        }
+
+        function showAlbumDetail(albumId) {
+            currentAlbum = albums.find(a => a.id === albumId);
+            if (!currentAlbum) return;
+            
+            document.getElementById('homeView').classList.add('hidden');
+            document.getElementById('albumView').classList.remove('hidden');
+            document.getElementById('albumView').style.display = 'flex';
+            document.getElementById('backBtn').classList.remove('hidden');
+            document.getElementById('viewTitle').textContent = currentAlbum.title;
+            renderSongs();
+            lucide.createIcons();
+        }
+
+        // Modal functions
+        function showAlbumModal() {
+            document.getElementById('albumModal').classList.remove('hidden');
+            document.getElementById('albumModal').classList.add('flex');
+            lucide.createIcons();
+        }
+
+        function showSongModal() {
+            if (!currentAlbum) return;
+            document.getElementById('songModal').classList.remove('hidden');
+            document.getElementById('songModal').classList.add('flex');
+            lucide.createIcons();
+        }
+
+        function hideModals() {
+            document.getElementById('albumModal').classList.add('hidden');
+            document.getElementById('albumModal').classList.remove('flex');
+            document.getElementById('songModal').classList.add('hidden');
+            document.getElementById('songModal').classList.remove('flex');
+            
+            // Reset album form
+            document.getElementById('albumTitle').value = '';
+            
+            // Reset song form
+            document.getElementById('songTitle').value = '';
+            document.getElementById('songArtist').value = '';
+            document.getElementById('songLyrics').value = '';
+            
+            // Reset file data
+            currentSongData = { audioData: '', imageData: '' };
+            
+            // Reset image preview
+            const imagePreview = document.getElementById('imagePreview');
+            imagePreview.classList.add('hidden');
+            imagePreview.src = '';
+            
+            // Reset audio icon
+            const audioIcon = document.getElementById('audioIcon');
+            audioIcon.classList.remove('text-cyan-400');
+            audioIcon.classList.add('text-white/20');
+            
+            lucide.createIcons();
+        }
+
+        // Album functions
+        function createAlbum() {
+            const title = document.getElementById('albumTitle').value.trim();
+            if (!title) return;
+
+            const newAlbum = {
+                id: Date.now().toString(),
+                title: title,
+                songs: [],
+                createdAt: Date.now()
+            };
+
+            albums.push(newAlbum);
+            saveAlbums();
+            hideModals();
+            renderHome();
+            // Jump straight into the new album so users can add tracks immediately
+            showAlbumDetail(newAlbum.id);
+        }
+
+        // Song functions
+        function addSong() {
+            if (!currentAlbum) {
+                alert('Please select an album first!');
+                return;
+            }
+            
+            const title = document.getElementById('songTitle').value.trim();
+            const artist = document.getElementById('songArtist').value.trim();
+            const lyrics = document.getElementById('songLyrics').value;
+
+            if (!title) {
+                alert('Please enter a song title!');
+                return;
+            }
+
+            if (!currentSongData.audioData) {
+                alert('Please upload an audio file!');
+                return;
+            }
+
+            const newSong = {
+                id: Date.now().toString(),
+                title: title,
+                artist: artist || 'Unknown',
+                lyrics: lyrics,
+                audioData: currentSongData.audioData,
+                imageData: currentSongData.imageData,
+                createdAt: Date.now()
+            };
+
+            // Find the album in the albums array and update it
+            const albumIndex = albums.findIndex(a => a.id === currentAlbum.id);
+            if (albumIndex !== -1) {
+                if (!albums[albumIndex].songs) {
+                    albums[albumIndex].songs = [];
+                }
+                albums[albumIndex].songs.push(newSong);
+                currentAlbum = albums[albumIndex]; // Update reference
+                try {
+                    saveAlbums();
+                    console.log('Song added successfully!');
+                } catch (err) {
+                    console.error('Failed to save song:', err);
+                    alert('Could not save the song. Try again or use a smaller audio file.');
+                }
+
+                // Refresh UI states
+                hideModals();
+                renderSongs();
+                renderHome();
+                showAlbumDetail(currentAlbum.id);
+                updateFullView(currentSong || newSong);
+            }
+        }
+
+        function playSong(songId) {
+            if (!currentAlbum) return;
+            const song = currentAlbum.songs.find(s => s.id === songId);
+            if (!song || !song.audioData) return;
+
+            currentSong = song;
+            setGlowColorFromImage(song.imageData);
+            audioElement.src = song.audioData;
+            audioElement.play();
+            isPlaying = true;
+            
+            updateNowPlaying();
+            updatePlayButton();
+            renderSongs();
+            
+            document.getElementById('lyricsDisplay').textContent = song.lyrics || 'No lyrics available...';
+            document.getElementById('playBtn').disabled = false;
+
+            updateFullView(song);
+            
+            // Ensure base glow appears immediately
+            setTimeout(() => {
+                const { r, g, b } = currentGlowColor;
+                const baseGlow = `0 0 30px 10px rgba(${r}, ${g}, ${b}, 0.4)`;
+                const albumArt = document.getElementById('albumArt');
+                if (albumArt) albumArt.style.boxShadow = baseGlow;
+            }, 100);
+            
+            startVisualizer();
+        }
+
+        function togglePlay() {
+            if (!currentSong) return;
+            
+            if (isPlaying) {
+                audioElement.pause();
+                isPlaying = false;
+                stopVisualizer();
+            } else {
+                audioElement.play();
+                isPlaying = true;
+                startVisualizer();
+            }
+            
+            updatePlayButton();
+        }
+
+        function skipNext() {
+            if (!currentAlbum || !currentSong) return;
+            const currentIndex = currentAlbum.songs.findIndex(s => s.id === currentSong.id);
+            const nextIndex = (currentIndex + 1) % currentAlbum.songs.length;
+            playSong(currentAlbum.songs[nextIndex].id);
+        }
+
+        function skipPrev() {
+            if (!currentAlbum || !currentSong) return;
+            const currentIndex = currentAlbum.songs.findIndex(s => s.id === currentSong.id);
+            const prevIndex = currentIndex === 0 ? currentAlbum.songs.length - 1 : currentIndex - 1;
+            playSong(currentAlbum.songs[prevIndex].id);
+        }
+
+        // File handling
+        function handleAudioFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentSongData.audioData = e.target.result;
+                document.getElementById('audioIcon').classList.remove('text-white/20');
+                document.getElementById('audioIcon').classList.add('text-cyan-400');
+                
+                if (!document.getElementById('songTitle').value) {
+                    document.getElementById('songTitle').value = file.name.replace(/\.[^/.]+$/, '');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleImageFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentSongData.imageData = e.target.result;
+                const preview = document.getElementById('imagePreview');
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Rendering
+        function renderHome() {
+            const homeView = document.getElementById('homeView');
+            homeView.innerHTML = '';
+
+            albums.forEach(album => {
+                const albumCard = document.createElement('div');
+                albumCard.onclick = () => showAlbumDetail(album.id);
+                albumCard.className = 'group relative aspect-square rounded-[3rem] overflow-hidden cursor-pointer transition-all duration-500 hover:translate-y-[-8px]';
+                albumCard.innerHTML = `
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-600 via-violet-600 to-fuchsia-600 opacity-80 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <i data-lucide="disc" class="text-white/10 group-hover:scale-125 transition-transform duration-1000 group-hover:rotate-180" style="width: 80px; height: 80px;"></i>
+                    </div>
+                    <div class="absolute top-4 right-4">
+                        <button onclick="event.stopPropagation(); deleteAlbum('${album.id}')" class="w-8 h-8 bg-red-500/80 hover:bg-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                            <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
+                        </button>
+                    </div>
+                    <div class="absolute bottom-8 left-8 right-8">
+                        <h3 class="text-2xl font-black leading-tight uppercase italic">${album.title}</h3>
+                        <span class="text-[10px] font-black bg-white/20 px-2 py-0.5 rounded-full uppercase">${album.songs.length} Tracks</span>
+                    </div>
+                `;
+                homeView.appendChild(albumCard);
+            });
+
+            const addButton = document.createElement('button');
+            addButton.onclick = showAlbumModal;
+            addButton.className = 'aspect-square rounded-[3rem] border-2 border-dashed border-white/20 flex flex-col items-center justify-center gap-4 text-white/20 hover:border-cyan-400 hover:text-cyan-400 transition-all group bg-white/5';
+            addButton.innerHTML = `
+                <i data-lucide="plus" style="width: 32px; height: 32px;"></i>
+                <span class="font-black text-[10px] uppercase tracking-[0.3em]">Manifest Album</span>
+            `;
+            homeView.appendChild(addButton);
+
+            lucide.createIcons();
+        }
+
+        function renderSongs() {
+            if (!currentAlbum) return;
+            
+            const songList = document.getElementById('songList');
+            if (currentAlbum.songs.length === 0) {
+                songList.innerHTML = '<p class="text-white/40 text-center py-8">No tracks yet. Add some!</p>';
+                return;
+            }
+
+            songList.innerHTML = '';
+            currentAlbum.songs.forEach(song => {
+                const isCurrentSong = currentSong && currentSong.id === song.id;
+                const songCard = document.createElement('div');
+                songCard.onclick = () => playSong(song.id);
+                songCard.className = `flex items-center justify-between p-4 rounded-[1.5rem] group cursor-pointer border transition-all duration-300 ${
+                    isCurrentSong 
+                        ? 'bg-cyan-400 text-black border-cyan-400 shadow-xl' 
+                        : 'bg-white/5 border-transparent hover:border-white/10 hover:bg-white/10'
+                }`;
+                
+                const imgHtml = song.imageData 
+                    ? `<img src="${song.imageData}" class="w-full h-full object-cover" />` 
+                    : `<i data-lucide="music" class="m-auto text-white/20" style="width: 24px; height: 24px;"></i>`;
+                
+                songCard.innerHTML = `
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 rounded-2xl overflow-hidden bg-black flex-shrink-0 shadow-lg flex items-center justify-center">
+                            ${imgHtml}
+                        </div>
+                        <div>
+                            <h4 class="font-black text-lg leading-none">${song.title}</h4>
+                            <p class="text-xs mt-1 font-bold uppercase tracking-widest ${isCurrentSong ? 'text-black/60' : 'text-white/40'}">${song.artist}</p>
+                        </div>
+                    </div>
+                    <button onclick="event.stopPropagation(); deleteSong('${song.id}')" class="p-2 rounded-full ${isCurrentSong ? 'bg-black/20 hover:bg-black/30' : 'bg-white/5 hover:bg-red-500/20'} transition-all opacity-0 group-hover:opacity-100">
+                        <i data-lucide="trash-2" class="${isCurrentSong ? 'text-black/60' : 'text-red-400'}" style="width: 18px; height: 18px;"></i>
+                    </button>
+                `;
+                songList.appendChild(songCard);
+            });
+
+            lucide.createIcons();
+        }
+
+        function updateNowPlaying() {
+            if (!currentSong) return;
+            
+            document.getElementById('nowPlayingTitle').textContent = currentSong.title;
+            document.getElementById('nowPlayingArtist').textContent = currentSong.artist;
+            
+            const albumArt = document.getElementById('albumArt');
+            if (currentSong.imageData) {
+                albumArt.innerHTML = `<img src="${currentSong.imageData}" class="w-full h-full object-cover" />`;
+            } else {
+                albumArt.innerHTML = '<i data-lucide="music" class="text-white/20" style="width: 32px; height: 32px;"></i>';
+                lucide.createIcons();
+            }
+        }
+
+        function updatePlayButton() {
+            const playBtn = document.getElementById('playBtn');
+            const fullViewPlayBtn = document.getElementById('fullViewPlayBtn');
+            const icon = isPlaying ? 'pause' : 'play';
+            const ml = isPlaying ? '' : 'ml-0.5';
+            
+            if (playBtn) {
+                playBtn.innerHTML = `<i data-lucide="${icon}" class="${ml}" style="width: 20px; height: 20px; fill: black;"></i>`;
+            }
+            if (fullViewPlayBtn) {
+                fullViewPlayBtn.innerHTML = `<i data-lucide="${icon}" class="${ml}" style="width: 28px; height: 28px; fill: black;"></i>`;
+            }
+            
+            lucide.createIcons();
+        }
+
+        // Full View Controls
+        function openFullView() {
+            if (!currentSong) {
+                alert('Pick a song first');
+                return;
+            }
+            const full = document.getElementById('fullView');
+            full.classList.remove('hidden');
+            full.classList.add('flex');
+            updateFullView(currentSong);
+            lucide.createIcons();
+        }
+
+        function closeFullView() {
+            const full = document.getElementById('fullView');
+            full.classList.add('hidden');
+            full.classList.remove('flex');
+        }
+
+        function updateFullView(song) {
+            if (!song) return;
+            document.getElementById('fullViewTitle').textContent = song.title;
+            document.getElementById('fullViewArtist').textContent = song.artist || 'Unknown';
+            
+            // Parse and render lyrics
+            parsedLyrics = parseLyrics(song.lyrics);
+            currentLyricIndex = -1;
+            renderSyncedLyrics(-1);
+
+            const art = document.getElementById('fullViewArt');
+            if (song.imageData) {
+                art.innerHTML = `<img src="${song.imageData}" class="w-full h-full object-contain" />`;
+                setGlowColorFromImage(song.imageData);
+            } else {
+                art.innerHTML = '<i data-lucide="music" class="text-white/30" style="width: 64px; height: 64px;"></i>';
+                setGlowColorFromImage(null);
+            }
+
+            lucide.createIcons();
+        }
+
+        // Audio Visualizer
+        function startVisualizer() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyzer = audioContext.createAnalyser();
+                analyzer.fftSize = 256;
+                
+                try {
+                    if (!audioSource) {
+                        audioSource = audioContext.createMediaElementSource(audioElement);
+                    }
+                    audioSource.connect(analyzer);
+                    analyzer.connect(audioContext.destination);
+                } catch (e) {
+                    console.log('Audio context setup:', e);
+                }
+            }
+
+            const albumArt = document.getElementById('albumArt');
+            const dataArray = new Uint8Array(analyzer.frequencyBinCount);
+
+            function animate() {
+                if (!isPlaying) return;
+                
+                analyzer.getByteFrequencyData(dataArray);
+                const avg = dataArray.slice(0, 10).reduce((a, b) => a + b, 0) / 10;
+                const intensity = avg / 255;
+
+                const glow = 25 + intensity * 80;
+                const spread = 5 + intensity * 40;
+                const opacity = 0.3 + intensity * 0.7;
+                const brightness = 0.9 + intensity * 0.6;
+                const scale = 1 + intensity * 0.08;
+                const { r, g, b } = currentGlowColor;
+
+                // Multiple layers of glow for stronger border effect
+                const innerGlow = `0 0 ${glow * 0.6}px ${spread * 0.5}px rgba(${r}, ${g}, ${b}, ${opacity})`;
+                const midGlow = `0 0 ${glow}px ${spread}px rgba(${r}, ${g}, ${b}, ${opacity * 0.8})`;
+                const outerGlow = `0 0 ${glow * 1.5}px ${spread * 1.8}px rgba(${r}, ${g}, ${b}, ${opacity * 0.6})`;
+                const shadow = `${innerGlow}, ${midGlow}, ${outerGlow}`;
+                const ring = `0 0 ${glow * 2}px ${spread * 2.5}px rgba(${r}, ${g}, ${b}, ${opacity * 0.9})`;
+
+                albumArt.style.boxShadow = shadow;
+                albumArt.style.filter = `brightness(${brightness}) drop-shadow(0 0 ${glow}px rgba(${r}, ${g}, ${b}, ${opacity * 0.8}))`;
+                albumArt.style.transform = `scale(${scale})`;
+
+                const fullArt = document.getElementById('fullViewArt');
+                const fullWrap = document.getElementById('fullViewArtWrapper');
+                if (fullArt) {
+                    fullArt.style.boxShadow = shadow;
+                    fullArt.style.filter = `brightness(${brightness}) drop-shadow(0 0 ${glow}px rgba(${r}, ${g}, ${b}, ${opacity * 0.8}))`;
+                    fullArt.style.transform = `scale(${scale})`;
+                }
+                if (fullWrap) {
+                    fullWrap.style.boxShadow = ring;
+                    fullWrap.style.filter = `brightness(${brightness})`;
+                    fullWrap.style.transform = `scale(${scale})`;
+                }
+
+                animationId = requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+
+        function stopVisualizer() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+            
+            // Keep base glow when paused, just stop the pulsing animation
+            const albumArt = document.getElementById('albumArt');
+            const fullArt = document.getElementById('fullViewArt');
+            const fullWrap = document.getElementById('fullViewArtWrapper');
+            const { r, g, b } = currentGlowColor;
+            // Stronger base glow with multiple layers
+            const innerGlow = `0 0 20px 5px rgba(${r}, ${g}, ${b}, 0.4)`;
+            const outerGlow = `0 0 40px 15px rgba(${r}, ${g}, ${b}, 0.5)`;
+            const baseGlow = `${innerGlow}, ${outerGlow}`;
+            const baseRing = `0 0 50px 20px rgba(${r}, ${g}, ${b}, 0.6)`;
+            
+            albumArt.style.boxShadow = baseGlow;
+            albumArt.style.filter = `brightness(1) drop-shadow(0 0 25px rgba(${r}, ${g}, ${b}, 0.5))`;
+            albumArt.style.transform = 'scale(1)';
+            if (fullArt) {
+                fullArt.style.boxShadow = baseGlow;
+                fullArt.style.filter = `brightness(1) drop-shadow(0 0 25px rgba(${r}, ${g}, ${b}, 0.5))`;
+                fullArt.style.transform = 'scale(1)';
+            }
+            if (fullWrap) {
+                fullWrap.style.boxShadow = baseRing;
+                fullWrap.style.filter = 'brightness(1)';
+                fullWrap.style.transform = 'scale(1)';
+            }
+        }
+
+        // Start the app
+        window.addEventListener('DOMContentLoaded', init);
+
+        // Global ESC to return home from anywhere (including full view or modals)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                try { closeFullView(); } catch (err) { console.log(err); }
+                try { hideModals(); } catch (err) { console.log(err); }
+                try { showHome(); } catch (err) { console.log(err); }
+            }
+        });
+    </script>
+</body>
+</html>
