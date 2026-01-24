@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landscape Image Showcase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fad0c4, #a18cd1, #fbc2eb, #ff0844);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .image-container {
+            max-width: 1000px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 2rem;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            position: relative;
+        }
+
+        /* AGGRESSIVE ANIMATED GLOW EFFECT */
+        @keyframes aggressiveGlow {
+            0% {
+                box-shadow: 0 0 30px 10px rgba(139, 92, 246, 0.8), 0 0 60px 20px rgba(236, 72, 153, 0.4);
+            }
+            33% {
+                box-shadow: 0 0 40px 15px rgba(239, 68, 68, 0.8), 0 0 70px 25px rgba(168, 85, 247, 0.4);
+            }
+            66% {
+                box-shadow: 0 0 35px 12px rgba(236, 72, 153, 0.8), 0 0 65px 22px rgba(139, 92, 246, 0.4);
+            }
+            100% {
+                box-shadow: 0 0 30px 10px rgba(139, 92, 246, 0.8), 0 0 60px 20px rgba(236, 72, 153, 0.4);
+            }
+        }
+
+        .image-container:hover {
+            transform: scale(1.04);
+            animation: aggressiveGlow 2s infinite alternate ease-in-out;
+            border-color: rgba(255, 255, 255, 0.8);
+            z-index: 10;
+        }
+
+        .frame {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1.5rem;
+            aspect-ratio: 16 / 9;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 1.2s cubic-bezier(0.2, 1, 0.2, 1);
+        }
+
+        .image-container:hover img {
+            transform: scale(1.08);
+        }
+
+        .glass-text {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 8px 24px;
+            border-radius: 30px;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .image-container:hover .glass-text {
+            color: #ff0844;
+            letter-spacing: 0.2em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="image-container">
+        <div class="frame">
+            <!-- ⬇️ PASTE YOUR IMAGE LINK IN THE SRC ATTRIBUTE BELOW ⬇️ -->
+            <img 
+                src="10K.png" 
+                alt="Landscape Image"
+                onerror="this.src='https://via.placeholder.com/1200x675?text=Image+Not+Found'"
+            >
+        </div>
+        <div class="mt-6 text-center">
+            <h1 class="glass-text text-gray-700 font-bold tracking-widest uppercase text-xs">
+                ✨ Hover your mouse/cursor over the image for a PERFECT view ✨
+            </h1>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z-READS // IMMERSIVE-MASTER</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+
+        :root {
+            --bg-deep: #050a0f;
+            --surface: rgba(15, 15, 15, 0.6);
+            --card: rgba(255, 255, 255, 0.03);
+            --mint: #00ff88;
+            --blue: #3e81ff;
+            --gradient: linear-gradient(135deg, var(--mint) 0%, var(--blue) 100%);
+            --text: #ffffff;
+            --text-dim: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            
+            --glow-tl: rgba(0, 255, 136, 0);
+            --glow-tr: rgba(62, 129, 255, 0);
+            --glow-bl: rgba(255, 62, 129, 0);
+            --glow-br: rgba(255, 255, 0, 0);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; cursor: default; }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .nebula-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background: var(--bg-deep);
+        }
+
+        .glow-point {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.4;
+            animation: moveGlow 15s infinite alternate ease-in-out;
+        }
+
+        .gp-1 { width: 600px; height: 600px; background: var(--mint); top: -100px; left: -100px; }
+        .gp-2 { width: 500px; height: 500px; background: var(--blue); bottom: -100px; right: -100px; animation-duration: 20s; }
+        .gp-3 { width: 400px; height: 400px; background: var(--blue); top: 40%; left: 60%; opacity: 0.15; animation-duration: 25s; }
+
+        @keyframes moveGlow {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 50px) scale(1.2); }
+        }
+
+        .z-gradient-text {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .z-btn {
+            background: var(--gradient);
+            border: none;
+            color: #000;
+            padding: 10px 22px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .z-btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4); 
+        }
+
+        header {
+            height: 90px;
+            padding: 0 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--glass-border);
+            backdrop-filter: blur(30px);
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.02);
+            transition: transform 0.4s ease;
+        }
+
+        .logo { font-weight: 800; font-size: 1.8rem; letter-spacing: -2px; }
+
+        .view { flex: 1; display: none; overflow-y: auto; padding: 2rem; position: relative; }
+        .view.active { display: block; }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2.5rem;
+            max-width: 1300px;
+            margin: 4rem auto;
+        }
+
+        .project-card {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            padding: 3rem;
+            transition: 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+        }
+
+        .project-card:hover {
+            border-color: var(--mint);
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .project-card h3 { font-size: 1.5rem; margin-bottom: 0.8rem; }
+        .project-card p { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 2.5rem; }
+
+        #view-reader {
+            padding: 0;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            background: 
+                radial-gradient(circle at 10% 10%, var(--glow-tl) 0%, transparent 70%),
+                radial-gradient(circle at 90% 10%, var(--glow-tr) 0%, transparent 70%),
+                radial-gradient(circle at 10% 90%, var(--glow-bl) 0%, transparent 70%),
+                radial-gradient(circle at 90% 90%, var(--glow-br) 0%, transparent 70%);
+            transition: background 1.5s ease;
+        }
+        #view-reader.active { display: flex; }
+
+        .reader-stage {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            position: relative;
+        }
+
+        #comic-page {
+            max-width: 100%;
+            max-height: calc(100vh - 200px);
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 0 120px rgba(0,0,0,0.9), 0 0 60px var(--glow-tl);
+            z-index: 5;
+            transition: max-height 0.4s ease;
+        }
+
+        /* Fullscreen tweaks */
+        body.is-fullscreen header { transform: translateY(-100%); }
+        body.is-fullscreen #comic-page { max-height: calc(100vh - 120px); }
+
+        /* --- Floating Corner Actions --- */
+        .corner-actions {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1.2rem;
+        }
+
+        .icon-btn:hover {
+            border-color: var(--mint);
+            background: rgba(0, 255, 136, 0.1);
+            transform: scale(1.1);
+        }
+
+        /* --- Asset Manager Drawer --- */
+        #asset-manager {
+            position: fixed;
+            top: 0; right: -400px;
+            width: 400px; height: 100%;
+            background: rgba(10, 15, 20, 0.95);
+            backdrop-filter: blur(30px);
+            border-left: 1px solid var(--glass-border);
+            z-index: 200;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+        }
+
+        #asset-manager.active { right: 0; }
+
+        .asset-list {
+            flex: 1;
+            overflow-y: auto;
+            margin: 20px 0;
+            padding-right: 10px;
+        }
+
+        .asset-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card);
+            padding: 12px 18px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid transparent;
+            transition: 0.2s;
+        }
+
+        .asset-item:hover { border-color: var(--mint); background: rgba(255, 255, 255, 0.05); }
+
+        .asset-info { font-size: 0.85rem; color: var(--text-main); }
+        .asset-delete-btn {
+            background: rgba(255, 62, 129, 0.1);
+            color: #ff3e81;
+            border: 1px solid rgba(255, 62, 129, 0.3);
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: 0.2s;
+        }
+        .asset-delete-btn:hover { background: #ff3e81; color: white; }
+
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(2, 6, 12, 0.9);
+            backdrop-filter: blur(20px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 300;
+        }
+
+        .modal-content {
+            background: rgba(20, 25, 30, 0.8);
+            border: 1px solid var(--glass-border);
+            padding: 4rem;
+            border-radius: 40px;
+            width: 95%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .modal-content input {
+            width: 100%;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--glass-border);
+            padding: 18px;
+            color: white;
+            border-radius: 20px;
+            margin: 25px 0;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+        }
+
+        footer {
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            z-index: 100;
+            background: rgba(0,0,0,0.1);
+            backdrop-filter: blur(15px);
+        }
+
+        .nav-circle {
+            width: 55px; height: 55px;
+            border-radius: 50%;
+            border: 1px solid var(--glass-border);
+            background: var(--card);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1.4rem;
+        }
+
+        .nav-circle:hover:not(:disabled) { border-color: var(--mint); transform: scale(1.15); }
+        .nav-circle:disabled { opacity: 0.05; }
+
+        #page-info { font-weight: 800; font-size: 1rem; letter-spacing: 4px; color: var(--mint); }
+
+        #toast {
+            position: fixed; bottom: 40px; right: 40px;
+            background: var(--gradient); color: #000;
+            padding: 16px 32px; border-radius: 20px;
+            font-weight: 800; z-index: 1000; display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="toast">SYSTEM SYNCED ✨</div>
+
+    <div class="nebula-bg">
+        <div class="glow-point gp-1"></div>
+        <div class="glow-point gp-2"></div>
+        <div class="glow-point gp-3"></div>
+    </div>
+
+    <header id="main-header">
+        <div class="logo z-gradient-text" id="btn-go-home" style="cursor: pointer;">Z-READS</div>
+        <div id="header-actions" style="display: flex; gap: 15px;">
+            <button id="btn-manage-assets" class="z-btn" style="display: none; background: transparent; color: white; border: 1px solid var(--glass-border);">⚙️ Manage Assets</button>
+            <button id="btn-new-project" class="z-btn">New Project</button>
+            <button id="btn-back-to-list" class="z-btn" style="display: none; background: transparent; color: white; border: 1px solid var(--glass-border);">Dashboard</button>
+        </div>
+    </header>
+
+    <!-- Project Asset Manager Drawer -->
+    <div id="asset-manager">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 class="z-gradient-text" style="font-size: 1.2rem;">PROJECT ASSETS</h2>
+            <button id="btn-close-manager" style="background: none; border: none; color: #777; cursor: pointer; font-size: 1.5rem;">×</button>
+        </div>
+        
+        <button id="btn-add-more" class="z-btn" style="width: 100%;">➕ Add More Images</button>
+        
+        <div id="asset-list" class="asset-list">
+            <!-- Asset items injected here -->
+        </div>
+
+        <p style="font-size: 0.7rem; color: var(--text-dim); text-align: center;">Click page name to jump to it.</p>
+    </div>
+
+    <main id="view-list" class="view active">
+        <h2 style="font-size: 3.5rem; text-align: center; margin-top: 4rem; font-weight: 800; letter-spacing: -3px;">
+            THE <span class="z-gradient-text">MULTIVERSE</span>
+        </h2>
+        <div id="project-grid" class="project-grid"></div>
+    </main>
+
+    <main id="view-reader" class="view">
+        <div class="reader-stage" id="reader-stage">
+            <div class="corner-actions" id="reader-corner-actions" style="display: none;">
+                <button id="btn-fullscreen-toggle" class="icon-btn" title="Toggle Immersive Mode">⛶</button>
+            </div>
+
+            <div id="empty-project" class="empty-state" style="text-align: center; color: var(--text-dim);">
+                <h2>EMPTY PROJECT</h2>
+                <p style="margin-bottom: 25px;">No images synced to this stream yet.</p>
+                <button id="btn-reader-upload" class="z-btn">Sync Images From PC</button>
+            </div>
+            <img id="comic-page" src="" alt="Comic Page" style="display: none;">
+        </div>
+        <footer id="reader-footer">
+            <button id="prev-btn" class="nav-circle">←</button>
+            <div id="page-info">00 // 00</div>
+            <button id="next-btn" class="nav-circle">→</button>
+        </footer>
+    </main>
+
+    <div id="modal-project" class="modal">
+        <div class="modal-content">
+            <h2 class="z-gradient-text" style="font-size: 2.2rem;">INITIATE VERSION</h2>
+            <input type="text" id="input-project-name" placeholder="Language / Version Name">
+            <div style="display: flex; gap: 20px; justify-content: center;">
+                <button id="btn-modal-cancel" class="z-btn" style="background: transparent; border: 1px solid var(--glass-border); color: white;">Abort</button>
+                <button id="btn-modal-save" class="z-btn">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="file-input" accept="image/*" multiple style="display: none;">
+    <canvas id="color-sampler" style="display:none;"></canvas>
+
+    <script>
+        const DB_NAME = "ZReads_Multilingual_v6";
+        const STORES = { PROJECTS: "projects", PAGES: "pages" };
+        let db;
+
+        async function initDB() {
+            return new Promise((resolve) => {
+                const request = indexedDB.open(DB_NAME, 1);
+                request.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    db.createObjectStore(STORES.PROJECTS, { keyPath: "id", autoIncrement: true });
+                    const pageStore = db.createObjectStore(STORES.PAGES, { keyPath: "id", autoIncrement: true });
+                    pageStore.createIndex("projectId", "projectId", { unique: false });
+                };
+                request.onsuccess = (e) => { db = e.target.result; resolve(); };
+            });
+        }
+
+        async function createProject(name) {
+            const transaction = db.transaction([STORES.PROJECTS], "readwrite");
+            return transaction.objectStore(STORES.PROJECTS).add({ name, createdAt: new Date(), lastPageIndex: 0 });
+        }
+
+        async function updateProjectProgress(projectId, index) {
+            const transaction = db.transaction([STORES.PROJECTS], "readwrite");
+            const store = transaction.objectStore(STORES.PROJECTS);
+            const request = store.get(projectId);
+            request.onsuccess = () => {
+                const data = request.result;
+                if (!data) return;
+                data.lastPageIndex = index;
+                store.put(data);
+            };
+        }
+
+        async function getAllProjects() {
+            return new Promise((resolve) => {
+                const store = db.transaction([STORES.PROJECTS], "readonly").objectStore(STORES.PROJECTS);
+                const request = store.getAll();
+                request.onsuccess = () => resolve(request.result);
+            });
+        }
+
+        async function addPages(projectId, files) {
+            const uploadPromises = Array.from(files).map(file => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const transaction = db.transaction([STORES.PAGES], "readwrite");
+                        transaction.objectStore(STORES.PAGES).add({ projectId, data: e.target.result, name: file.name });
+                        resolve();
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+            return Promise.all(uploadPromises);
+        }
+
+        async function deletePage(id) {
+            const transaction = db.transaction([STORES.PAGES], "readwrite");
+            transaction.objectStore(STORES.PAGES).delete(id);
+            return new Promise(resolve => transaction.oncomplete = resolve);
+        }
+
+        async function getPagesByProject(projectId) {
+            return new Promise((resolve) => {
+                const index = db.transaction([STORES.PAGES], "readonly").objectStore(STORES.PAGES).index("projectId");
+                const request = index.getAll(IDBKeyRange.only(projectId));
+                request.onsuccess = () => {
+                    const sorted = request.result.sort((a,b) => a.name.localeCompare(b.name, undefined, {numeric: true}));
+                    resolve(sorted);
+                };
+            });
+        }
+
+        async function deleteProject(id) {
+            const tx = db.transaction([STORES.PROJECTS, STORES.PAGES], "readwrite");
+            tx.objectStore(STORES.PROJECTS).delete(id);
+            const index = tx.objectStore(STORES.PAGES).index("projectId");
+            const req = index.getAllKeys(IDBKeyRange.only(id));
+            req.onsuccess = () => { req.result.forEach(key => tx.objectStore(STORES.PAGES).delete(key)); };
+            return new Promise(resolve => tx.oncomplete = resolve);
+        }
+
+        let currentProjectId = null;
+        let comicPages = [];
+        let currentIndex = 0;
+
+        const views = { list: document.getElementById('view-list'), reader: document.getElementById('view-reader') };
+        const assetManager = document.getElementById('asset-manager');
+        const assetList = document.getElementById('asset-list');
+        const modal = document.getElementById('modal-project');
+        const grid = document.getElementById('project-grid');
+        const toast = document.getElementById('toast');
+        const btnFullscreen = document.getElementById('btn-fullscreen-toggle');
+        const readerCornerActions = document.getElementById('reader-corner-actions');
+
+        function showToast(msg) {
+            toast.innerText = msg; toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 3000);
+        }
+
+        function switchView(viewName) {
+            Object.values(views).forEach(v => v.classList.remove('active'));
+            views[viewName].classList.add('active');
+            document.getElementById('btn-back-to-list').style.display = viewName === 'reader' ? 'block' : 'none';
+            document.getElementById('btn-manage-assets').style.display = viewName === 'reader' ? 'block' : 'none';
+            document.getElementById('btn-new-project').style.display = viewName === 'list' ? 'block' : 'none';
+            readerCornerActions.style.display = viewName === 'reader' ? 'flex' : 'none';
+            assetManager.classList.remove('active');
+            
+            if (viewName !== 'reader' && document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+        }
+
+        async function renderDashboard() {
+            const projects = await getAllProjects();
+            grid.innerHTML = '';
+            projects.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.innerHTML = `
+                    <h3>${p.name}</h3>
+                    <p>Stream Active: ${new Date(p.createdAt).toLocaleDateString()}</p>
+                    <div style="display: flex; gap: 15px;">
+                        <button class="z-btn" onclick="openProject(${p.id}, ${p.lastPageIndex})">RESUME</button>
+                        <button class="z-btn" style="background: transparent; color: #ff3e81; border: 1px solid rgba(255, 62, 129, 0.4);" onclick="handleDelete(${p.id})">DELETE</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        async function renderAssetList() {
+            assetList.innerHTML = '';
+            comicPages.forEach((page, idx) => {
+                const item = document.createElement('div');
+                item.className = 'asset-item';
+                item.innerHTML = `
+                    <div class="asset-info" style="cursor: pointer" onclick="jumpToPage(${idx})">
+                        <b>Page ${idx + 1}:</b> <span style="color: #777; font-size: 0.7rem;">${page.name}</span>
+                    </div>
+                    <button class="asset-delete-btn" onclick="handleDeletePage(${page.id}, event)">Delete</button>
+                `;
+                assetList.appendChild(item);
+            });
+        }
+
+        window.jumpToPage = (idx) => {
+            currentIndex = idx;
+            updateReader();
+            assetManager.classList.remove('active');
+        };
+
+        window.handleDeletePage = async (pageId, e) => {
+            e.stopPropagation();
+            if(confirm("Delete this page?")) {
+                await deletePage(pageId);
+                comicPages = await getPagesByProject(currentProjectId);
+                if (currentIndex >= comicPages.length) currentIndex = Math.max(0, comicPages.length - 1);
+                updateReader();
+                renderAssetList();
+                showToast("PAGE DELETED 🗑️");
+            }
+        };
+
+        async function openProject(id, lastIndex) {
+            currentProjectId = id;
+            comicPages = await getPagesByProject(id);
+            currentIndex = lastIndex || 0;
+            if (currentIndex >= comicPages.length) currentIndex = 0;
+            switchView('reader');
+            updateReader();
+        }
+
+        function updateReader() {
+            const pageImg = document.getElementById('comic-page');
+            const emptyState = document.getElementById('empty-project');
+            const pageInfo = document.getElementById('page-info');
+
+            if (comicPages.length === 0) {
+                pageImg.style.display = 'none';
+                emptyState.style.display = 'block';
+                pageInfo.innerText = "00 // 00";
+            } else {
+                pageImg.style.display = 'block';
+                emptyState.style.display = 'none';
+                pageImg.src = comicPages[currentIndex].data;
+                pageImg.onload = () => updateAmbientGlow(pageImg);
+                pageInfo.innerText = `${(currentIndex+1).toString().padStart(2,'0')} // ${comicPages.length.toString().padStart(2,'0')}`;
+                updateProjectProgress(currentProjectId, currentIndex);
+            }
+        }
+
+        const samplerCanvas = document.getElementById('color-sampler');
+        const samplerCtx = samplerCanvas.getContext('2d');
+
+        function updateAmbientGlow(img) {
+            samplerCanvas.width = 2; samplerCanvas.height = 2;
+            samplerCtx.drawImage(img, 0, 0, 2, 2);
+            const d = samplerCtx.getImageData(0, 0, 2, 2).data;
+            const getRGBA = (i) => `rgba(${d[i]}, ${d[i+1]}, ${d[i+2]}, 0.6)`;
+            const root = document.documentElement;
+            root.style.setProperty('--glow-tl', getRGBA(0));
+            root.style.setProperty('--glow-tr', getRGBA(4));
+            root.style.setProperty('--glow-bl', getRGBA(8));
+            root.style.setProperty('--glow-br', getRGBA(12));
+        }
+
+        /** 🖥️ FULLSCREEN LOGIC **/
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    showToast("FULLSCREEN ERROR ❌");
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                document.body.classList.add('is-fullscreen');
+                btnFullscreen.innerText = "⛶"; // Keep icon but add style if needed
+                btnFullscreen.style.borderColor = "var(--mint)";
+            } else {
+                document.body.classList.remove('is-fullscreen');
+                btnFullscreen.innerText = "⛶";
+                btnFullscreen.style.borderColor = "var(--glass-border)";
+            }
+        });
+
+        btnFullscreen.onclick = toggleFullscreen;
+
+        document.getElementById('btn-new-project').onclick = () => modal.style.display = 'flex';
+        document.getElementById('btn-modal-cancel').onclick = () => modal.style.display = 'none';
+        document.getElementById('btn-go-home').onclick = () => switchView('list');
+        document.getElementById('btn-back-to-list').onclick = () => { switchView('list'); renderDashboard(); };
+        
+        document.getElementById('btn-manage-assets').onclick = () => {
+            assetManager.classList.toggle('active');
+            renderAssetList();
+        };
+        document.getElementById('btn-close-manager').onclick = () => assetManager.classList.remove('active');
+
+        document.getElementById('btn-modal-save').onclick = async () => {
+            const name = document.getElementById('input-project-name').value;
+            if (name) {
+                await createProject(name);
+                document.getElementById('input-project-name').value = '';
+                modal.style.display = 'none';
+                renderDashboard();
+                showToast("STREAM INITIALIZED ☄️");
+            }
+        };
+
+        window.handleDelete = async (id) => {
+            if (confirm("Permanently delete this project version?")) {
+                await deleteProject(id);
+                renderDashboard();
+                showToast("STREAM CLOSED 🗑️");
+            }
+        };
+
+        document.getElementById('btn-reader-upload').onclick = () => document.getElementById('file-input').click();
+        document.getElementById('btn-add-more').onclick = () => document.getElementById('file-input').click();
+        
+        document.getElementById('file-input').onchange = async (e) => {
+            const files = Array.from(e.target.files);
+            if (files.length > 0) {
+                showToast("SYNCING ASSETS...");
+                try {
+                    await addPages(currentProjectId, files);
+                    comicPages = await getPagesByProject(currentProjectId);
+                    updateReader();
+                    renderAssetList();
+                    showToast("SYNC COMPLETE ✨");
+                } catch (err) { showToast("SYNC FAILED ❌"); }
+            }
+        };
+
+        document.getElementById('prev-btn').onclick = () => { if(currentIndex > 0) { currentIndex--; updateReader(); } };
+        document.getElementById('next-btn').onclick = () => { if(currentIndex < comicPages.length-1) { currentIndex++; updateReader(); } };
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "ArrowLeft") document.getElementById('prev-btn').click();
+            if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); document.getElementById('next-btn').click(); }
+            if (e.key === "f" || e.key === "F") toggleFullscreen();
+        });
+
+        window.onload = async () => {
+            await initDB();
+            renderDashboard();
+        };
+    </script>
+</body>
+</html>
