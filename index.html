@@ -1,368 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viva la Vida // Music</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: linear-gradient(-45deg, #ffffff, #60a5fa, #a855f7, #ec4899, #8b5cf6);
-            background-size: 400% 400%;
-            animation: auraGradient 15s ease infinite;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #1e293b;
-            padding: 1rem;
-            overflow: hidden;
-        }
-
-        @keyframes auraGradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .cursive-title {
-            font-family: 'Great Vibes', cursive;
-            background: linear-gradient(to right, #8b5cf6, #ec4899);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.2));
-            font-size: clamp(2.5rem, 8vw, 3.5rem);
-            line-height: 1.2;
-        }
-
-        .glass-container {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.1);
-            border-radius: 2.5rem;
-            width: 100%;
-            max-width: 400px;
-            height: clamp(650px, 90vh, 780px);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .page {
-            position: absolute;
-            inset: 0;
-            padding: 2rem;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .hidden-left { transform: translateX(-100%); opacity: 0; pointer-events: none; }
-        .hidden-right { transform: translateX(100%); opacity: 0; pointer-events: none; }
-
-        .song-card {
-            background: rgba(255, 255, 255, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            border-radius: 1.25rem;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        .song-card:hover {
-            background: rgba(255, 255, 255, 0.6);
-            transform: translateY(-2px);
-        }
-
-        .album-art-container {
-            width: 100%;
-            padding-top: 100%; /* Square aspect ratio */
-            position: relative;
-            margin-bottom: 2rem;
-        }
-
-        .album-art-big {
-            position: absolute;
-            inset: 0;
-            border-radius: 2rem;
-            background-size: cover;
-            background-position: center;
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15);
-            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            background-color: rgba(139, 92, 246, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .album-art-big img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 2rem;
-        }
-
-        .playing .album-art-big { transform: scale(1.03); }
-
-        /* Smaller, more elegant range input */
-        input[type="range"] {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 4px;
-            background: rgba(0,0,0,0.06);
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 14px;
-            height: 14px;
-            background: #1e293b;
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .btn-main:active { transform: scale(0.92); }
-        
-        #songList::-webkit-scrollbar { width: 3px; }
-        #songList::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Projects</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #3498db, #9b59b6, #3498db);
+      background-size: 400% 400%;
+      animation: gradientAnimation 15s ease infinite;
+      padding: 20px;
+    }
+    @keyframes gradientAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .box {
+      max-width: 400px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      transform: translateY(-40px);
+    }
+    .profile img {
+      width: 150px;
+      border-radius: 50%;
+      border: 4px solid #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    h1 {
+      background: linear-gradient(to right, darkblue, darkviolet);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 2.2em;
+      margin: 15px 0;
+    }
+    .btn {
+      display: block;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      color: #fff;
+      padding: 15px; /* Updated from 12px */
+      margin: 10px 0;
+      text-decoration: none;
+      border-radius: 25px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1em; /* Added */
+    }
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Password styles */
+    #password-form {
+      margin: 0 auto;
+      max-width: 300px;
+    }
+    #password-input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 20px;
+      border: 2px solid #9b59b6;
+      font-size: 1em;
+      text-align: center;
+      outline: none;
+    }
+    #password-input:focus {
+      border-color: #6a11cb;
+      box-shadow: 0 0 8px rgba(106, 17, 203, 0.5);
+    }
+    #content {
+      display: none;
+    }
+    .error-message {
+      color: #e74c3c;
+      margin-top: 10px;
+      font-size: 0.9em;
+    }
+  </style>
 </head>
 <body>
-
-    <div class="glass-container">
+  <div class="box">
+    <h1>Welcome</h1>
+    
+    <div id="password-section">
+      <p>Please enter the password to continue:</p>
+      <div id="password-form">
+        <input type="password" id="password-input" placeholder="Enter password">
+        <button onclick="checkPassword()" class="btn">Submit</button>
+        <p id="error-message" class="error-message"></p>
+      </div>
+    </div>
+    
+    <div id="content">
+      <div class="profile">
+        <img src="profile.jpg" alt="Profile Picture"> 
+        <h1>My Projects</h1>
+      </div>
+      <div class="links">
+        <a href="viva_la_vida.html" class="btn">Viva La Vida</a>
         
-        <!-- PAGE 1: LIBRARY -->
-        <div id="libraryPage" class="page">
-            <div class="mb-6 pt-2">
-                <h1 class="cursive-title">Viva la Vida</h1>
-                <p class="text-slate-400 font-bold text-xs uppercase tracking-widest mt-1">Curated Vibes</p>
-            </div>
-            
-            <div id="songList" class="flex-1 overflow-y-auto space-y-3 pr-1">
-                <!-- Songs injected via JS -->
-            </div>
-        </div>
+      </div>
+    </div>
+  </div>
 
-        <!-- PAGE 2: PLAYER -->
-        <div id="playerPage" class="page hidden-right">
-            <!-- Header -->
-            <div class="flex justify-between items-center mb-6">
-                <button onclick="showPage('library')" class="p-2 bg-white/40 rounded-full hover:bg-white transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M164.24,203.76a6,6,0,1,1-8.48,8.48l-80-80a6,6,0,0,1,0-8.48l80-80a6,6,0,0,1,8.48,8.48L92.49,128Z"></path></svg>
-                </button>
-                <span class="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400">Playing Now</span>
-                <div class="w-8"></div>
-            </div>
+  <script>
+    // Always show password screen when page loads
+    window.onload = function() {
+      // Reset to password view every time
+      document.getElementById('password-section').style.display = 'block';
+      document.getElementById('content').style.display = 'none';
+      document.getElementById('password-input').value = '';
+      document.getElementById('error-message').textContent = '';
+    };
 
-            <div id="playerContent" class="flex-1 flex flex-col items-center justify-between py-2">
-                <!-- Art -->
-                <div class="album-art-container">
-                    <div id="playerArt" class="album-art-big">
-                        <img id="posterImg" src="" alt="Album Art" style="display: none;">
-                    </div>
-                </div>
-                
-                <!-- Info -->
-                <div class="text-center w-full px-2">
-                    <h2 id="playerTitle" class="text-2xl font-extrabold text-slate-800 line-clamp-1 tracking-tight">Song Title</h2>
-                    <p id="playerArtist" class="text-slate-400 font-bold text-sm mt-1 uppercase tracking-wider">Artist Name</p>
-                </div>
-
-                <!-- Progress -->
-                <div class="w-full px-2 mt-4">
-                    <input type="range" id="progressBar" value="0" step="0.1">
-                    <div class="flex justify-between text-[10px] font-bold text-slate-400 mt-2">
-                        <span id="currentTime">0:00</span>
-                        <span id="duration">0:00</span>
-                    </div>
-                </div>
-
-                <!-- CONTROLS: Scaled for browser harmony -->
-                <div class="flex items-center justify-center gap-8 w-full py-4">
-                    <button class="p-2 text-slate-400 hover:text-slate-800 transition-colors btn-main" onclick="skip(-10)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 256 256"><path d="M224,48V208a8,8,0,0,1-12.71,6.47l-96-72a8,8,0,0,1,0-12.94l96-72A8,8,0,0,1,224,48ZM104,48V208a8,8,0,0,1-16,0V48a8,8,0,0,1,16,0Z"></path></svg>
-                    </button>
-
-                    <button id="playBtn" class="w-16 h-16 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-lg btn-main hover:scale-105" onclick="togglePlay()">
-                        <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 256 256"><path d="M240,128a15.74,15.74,0,0,1-7.6,13.51L88.32,229.75a16,16,0,0,1-16.2.3,15.86,15.86,0,0,1-8.12-13.81V40.16a15.86,15.86,0,0,1,8.12-13.81,16,16,0,0,1,16.2.3L232.4,114.49A15.74,15.74,0,0,1,240,128Z"></path></svg>
-                    </button>
-
-                    <button class="p-2 text-slate-400 hover:text-slate-800 transition-colors btn-main" onclick="skip(10)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 256 256"><path d="M164.71,121.53l-96-72A8,8,0,0,0,56,56V200a8,8,0,0,0,12.71,6.47l96-72a8,8,0,0,0,0-12.94ZM176,48a8,8,0,0,1,16,0V208a8,8,0,0,1-16,0Z"></path></svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div> 
-
-    <audio id="audioElement" crossorigin="anonymous" controlsList="nodownload"></audio>
-
-    <script> 
-        const audio = document.getElementById('audioElement');
-        const songList = document.getElementById('songList');
-        const progressBar = document.getElementById('progressBar');
-        const currentTimeEl = document.getElementById('currentTime');
-        const durationEl = document.getElementById('duration');
-        const playIcon = document.getElementById('playIcon');
-        const playerArt = document.getElementById('playerArt');
-        
-        let currentSongIndex = 0;
-
-        const songs = [
-            {
-                title: "a Present from the PAST",
-                artist: "Nikhil",
-                poster: "posters and audio/01 track/a present from past (art work).png",
-                src: "posters and audio/01 track/a PRESENT from the PAST.m4a"
-            },
-            {
-                title: "may be next time with you",
-                artist: "Nikhil",
-                poster: "posters and audio/02 track/may be next time with you (art work).png",
-                src: "posters and audio/02 track/may be next time with you........m4a"
-            }
-        ];
-
-        function initLibrary() {
-            songList.innerHTML = '';
-            songs.forEach((song, index) => {
-                const card = document.createElement('div');
-                card.className = 'song-card p-3 flex items-center gap-4';
-                card.onclick = () => selectSong(index);
-                card.innerHTML = `
-                    <div class="w-12 h-12 rounded-lg bg-cover bg-center shadow-sm flex-shrink-0" style="background-image: url('${song.poster}')"></div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-slate-800 truncate text-base">${song.title}</h4>
-                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">${song.artist}</p>
-                    </div>
-                    <div class="text-slate-300 pr-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm36.44-94.44-48-32A6,6,0,0,0,107,95v66a6,6,0,0,0,9.44,5l48-32a6,6,0,0,0,0-10Z"></path></svg>
-                    </div>
-                `;
-                songList.appendChild(card);
-            });
-        }
-
-        function showPage(pageName) {
-            const lib = document.getElementById('libraryPage');
-            const play = document.getElementById('playerPage');
-            if (pageName === 'library') {
-                lib.classList.remove('hidden-left');
-                play.classList.add('hidden-right');
-            } else {
-                lib.classList.add('hidden-left');
-                play.classList.remove('hidden-right');
-            }
-        }
-
-        async function selectSong(index) {
-            currentSongIndex = index;
-            const song = songs[index];
-            audio.pause();
-            audio.currentTime = 0;
-            
-            // Properly encode the audio source
-            audio.src = encodeURI(song.src);
-            
-            // Load poster image
-            const posterImg = document.getElementById('posterImg');
-            if (song.poster) {
-                posterImg.src = encodeURI(song.poster);
-                posterImg.style.display = 'block';
-            } else {
-                posterImg.style.display = 'none';
-            }
-            
-            document.getElementById('playerTitle').innerText = song.title;
-            document.getElementById('playerArtist').innerText = song.artist;
-            showPage('player');
-            
-            // Load and play audio
-            audio.load();
-            setTimeout(() => {
-                const playPromise = audio.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        updatePlayUI(true);
-                    }).catch((error) => {
-                        console.error('Play error:', error);
-                        updatePlayUI(false);
-                    });
-                }
-            }, 100);
-        }
-
-        function togglePlay() {
-            if (audio.paused) {
-                const playPromise = audio.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        updatePlayUI(true);
-                    }).catch((error) => {
-                        console.error('Play error:', error);
-                        updatePlayUI(false);
-                    });
-                }
-            } else {
-                audio.pause();
-                updatePlayUI(false);
-            }
-        }
-
-        function updatePlayUI(playing) {
-            const playerPage = document.getElementById('playerPage');
-            if (playing) {
-                playerPage.classList.add('playing');
-                playIcon.innerHTML = `<path d="M208,48V208a8,8,0,0,1-8,8H160a8,8,0,0,1-8-8V48a8,8,0,0,1,8-8h40A8,8,0,0,1,208,48ZM96,40H56a8,8,0,0,0-8,8V208a8,8,0,0,0,8,8H96a8,8,0,0,0,8-8V48A8,8,0,0,0,96,40Z"></path>`;
-            } else {
-                playerPage.classList.remove('playing');
-                playIcon.innerHTML = `<path d="M240,128a15.74,15.74,0,0,1-7.6,13.51L88.32,229.75a16,16,0,0,1-16.2.3,15.86,15.86,0,0,1-8.12-13.81V40.16a15.86,15.86,0,0,1,8.12-13.81,16,16,0,0,1,16.2.3L232.4,114.49A15.74,15.74,0,0,1,240,128Z"></path>`;
-            }
-        }
-
-        function skip(seconds) { audio.currentTime += seconds; }
-
-        function formatTime(secs) {
-            if (isNaN(secs)) return "0:00";
-            const min = Math.floor(secs / 60);
-            const s = Math.floor(secs % 60);
-            return `${min}:${s < 10 ? '0' : ''}${s}`;
-        }
-
-        audio.addEventListener('loadedmetadata', () => {
-            progressBar.max = audio.duration;
-            durationEl.innerText = formatTime(audio.duration);
-        });
-
-        audio.addEventListener('timeupdate', () => {
-            if(!progressBar.dragging) {
-                progressBar.value = audio.currentTime;
-            }
-            currentTimeEl.innerText = formatTime(audio.currentTime);
-        });
-
-        audio.addEventListener('play', () => {
-            updatePlayUI(true);
-        });
-
-        audio.addEventListener('pause', () => {
-            updatePlayUI(false);
-        });
-
-        progressBar.addEventListener('input', () => { progressBar.dragging = true; });
-        progressBar.addEventListener('change', () => {
-            audio.currentTime = progressBar.value;
-            progressBar.dragging = false;
-        });
-
-        window.onload = initLibrary;
-    </script>
+    function checkPassword() {
+      const password = document.getElementById('password-input').value;
+      // Change 'yourpassword' to your desired password
+      if (password === '885522') {
+        document.getElementById('password-section').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+      } else {
+        document.getElementById('error-message').textContent = 'Incorrect password. Please try again.';
+        document.getElementById('password-input').value = '';
+      }
+    }
+    
+    // Allow Enter key to submit password
+    document.getElementById('password-input').addEventListener('keyup', function(event) {
+      if (event.key === 'Enter') {
+        checkPassword();
+      }
+    });
+  </script>
 </body>
 </html>
