@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korean Learning Master</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #1a202c;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            border-color: #667eea;
+        }
+
+        .menu-card.numbers {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .menu-card.colors {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .menu-card.datetime {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .menu-card.grammar {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+
+        .menu-card .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .menu-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .menu-card p {
+            font-size: 0.95rem;
+            opacity: 0.95;
+        }
+
+        .choice-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .choice-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .choice-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            border-color: #667eea;
+        }
+
+        .choice-card.sino {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .choice-card.native {
+            background: linear-gradient(135deg, #667eea 0%, #5a67d8 100%);
+            color: white;
+        }
+
+        .choice-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .choice-card p {
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #764ba2;
+        }
+
+        .btn-secondary:hover {
+            background: #6b4395;
+        }
+
+        .btn-success {
+            background: #48bb78;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #718096;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .learn-section, .practice-section {
+            display: none;
+        }
+
+        .learn-section.active, .practice-section.active {
+            display: block;
+        }
+
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .number-item {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .number-item .num {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .number-item .korean {
+            font-size: 1.1rem;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .number-item .romanization {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-top: 3px;
+        }
+
+        .color-item {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .color-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            flex-shrink: 0;
+        }
+
+        .color-info {
+            flex: 1;
+        }
+
+        .word-item {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 15px;
+        }
+
+        .word-item .korean-word {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .word-item .english {
+            font-size: 1rem;
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .word-item .example {
+            font-size: 0.95rem;
+            color: #718096;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            margin-top: 8px;
+        }
+
+        .word-item .tense-section {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .word-item .tense {
+            font-size: 0.9rem;
+            color: #4a5568;
+            margin: 5px 0;
+        }
+
+        .quiz-container {
+            margin-top: 20px;
+        }
+
+        .question-card {
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .question {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #cbd5e0;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #edf2f7;
+        }
+
+        .option.correct {
+            background: #c6f6d5;
+            border-color: #48bb78;
+        }
+
+        .option.incorrect {
+            background: #fed7d7;
+            border-color: #f56565;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 8px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item .label {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-bottom: 5px;
+        }
+
+        .stat-item .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .hint-box {
+            background: #edf2f7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #764ba2;
+        }
+
+        .hint-box h4 {
+            color: #764ba2;
+            margin-bottom: 8px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .info-card {
+            background: #edf2f7;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .info-card h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .info-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-card li {
+            padding: 5px 0;
+            color: #2d3748;
+        }
+
+        .info-card li:before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            margin: 10px 0;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .datetime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .choice-grid, .options, .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Main Menu -->
+        <div id="menu" class="page active">
+            <div class="header">
+                <h1>🇰🇷 Korean Learning Master</h1>
+                <p>Choose a category to start learning!</p>
+            </div>
+
+            <div class="menu-grid">
+                <div class="menu-card numbers" onclick="showPage('numbers-menu')">
+                    <div class="icon">🔢</div>
+                    <h2>Number System</h2>
+                    <p>Master Sino-Korean & Native Korean numbers</p>
+                </div>
+
+                <div class="menu-card colors" onclick="showPage('colors-menu')">
+                    <div class="icon">🎨</div>
+                    <h2>Color System</h2>
+                    <p>Learn essential Korean colors</p>
+                </div>
+
+                <div class="menu-card datetime" onclick="showPage('datetime-menu')">
+                    <div class="icon">📅</div>
+                    <h2>Time & Date</h2>
+                    <p>Tell time, days, and dates in Korean</p>
+                </div>
+
+                <div class="menu-card grammar" onclick="showPage('grammar-menu')">
+                    <div class="icon">📚</div>
+                    <h2>Grammar Basics</h2>
+                    <p>Essential nouns & verbs for daily life</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Numbers Menu -->
+        <div id="numbers-menu" class="page">
+            <div class="nav-buttons">
+                <button class="btn" onclick="showPage('menu')">← Main Menu</button>
+            </div>
+
+            <div class="header">
+                <h1>🔢 Number System</h1>
+                <p>Choose your number system!</p>
+            </div>
+
+            <div class="choice-grid">
+                <div class="choice-card sino" onclick="showPage('sino')">
+                    <h2>📚 Sino-Korean</h2>
+                    <p>Based on Chinese numbers</p>
+                    <p style="margin-top: 10px; font-size: 0.9rem;">일, 이, 삼 (1, 2, 3)</p>
+                    <p style="margin-top: 15px; font-weight: 600;">→ Used for dates, money, addresses</p>
+                </div>
+
+                <div class="choice-card native" onclick="showPage('native')">
+                    <h2>🎯 Native Korean</h2>
+                    <p>Pure Korean numbers</p>
+                    <p style="margin-top: 10px; font-size: 0.9rem;">하나, 둘, 셋 (1, 2, 3)</p>
+                    <p style="margin-top: 15px; font-weight: 600;">→ Used for age, counting, hours</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sino-Korean Page -->
+        <div id="sino" class="page">
+            <div class="nav-buttons">
+                <button class="btn" onclick="showPage('numbers-menu')">← Back</button>
+            </div>
+
+            <div class="card">
+                <h2 style="color: #667eea; margin-bottom: 20px;">Sino-Korean Numbers (한자어 수)</h2>
+                
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('sino', 'learn')">📖 Lesson</button>
+                    <button class="tab" onclick="switchTab('sino', 'practice')">✍️ Test</button>
+                </div>
+
+                <div id="sino-learn" class="learn-section active">
+                    <div class="hint-box">
+                        <h4>💡 When to use Sino-Korean numbers:</h4>
+                        <p>Money (원), dates, months, minutes, phone numbers, addresses, floors, measurements</p>
+                    </div>
+
+                    <h3 style="margin: 20px 0 15px 0; color: #2d3748;">Basic Numbers (1-10)</h3>
+                    <div class="number-grid">
+                        <div class="number-item"><div class="num">1</div><div class="korean">일</div><div class="romanization">il</div></div>
+                        <div class="number-item"><div class="num">2</div><div class="korean">이</div><div class="romanization">i</div></div>
+                        <div class="number-item"><div class="num">3</div><div class="korean">삼</div><div class="romanization">sam</div></div>
+                        <div class="number-item"><div class="num">4</div><div class="korean">사</div><div class="romanization">sa</div></div>
+                        <div class="number-item"><div class="num">5</div><div class="korean">오</div><div class="romanization">o</div></div>
+                        <div class="number-item"><div class="num">6</div><div class="korean">육</div><div class="romanization">yuk</div></div>
+                        <div class="number-item"><div class="num">7</div><div class="korean">칠</div><div class="romanization">chil</div></div>
+                        <div class="number-item"><div class="num">8</div><div class="korean">팔</div><div class="romanization">pal</div></div>
+                        <div class="number-item"><div class="num">9</div><div class="korean">구</div><div class="romanization">gu</div></div>
+                        <div class="number-item"><div class="num">10</div><div class="korean">십</div><div class="romanization">sip</div></div>
+                    </div>
+
+                    <h3 style="margin: 30px 0 15px 0; color: #2d3748;">Large Numbers</h3>
+                    <div class="number-grid">
+                        <div class="number-item"><div class="num">100</div><div class="korean">백</div><div class="romanization">baek</div></div>
+                        <div class="number-item"><div class="num">1,000</div><div class="korean">천</div><div class="romanization">cheon</div></div>
+                        <div class="number-item"><div class="num">10,000</div><div class="korean">만</div><div class="romanization">man</div></div>
+                        <div class="number-item"><div class="num">100,000,000</div><div class="korean">억</div><div class="romanization">eok</div></div>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h4>🔢 Formation Pattern</h4>
+                            <ul>
+                                <li>11 = 십일 (10 + 1)</li>
+                                <li>25 = 이십오 (2×10 + 5)</li>
+                                <li>99 = 구십구 (9×10 + 9)</li>
+                                <li>365 = 삼백육십오</li>
+                            </ul>
+                        </div>
+                        <div class="info-card">
+                            <h4>💰 Real Examples</h4>
+                            <ul>
+                                <li>5,000원 = 오천 원</li>
+                                <li>March 12 = 삼월 십이일</li>
+                                <li>Phone: 010-1234-5678</li>
+                                <li>3rd floor = 삼 층</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="sino-practice" class="practice-section">
+                    <div class="level-badge" id="sino-level">Level 1: Basics (1-10)</div>
+                    
+                    <div class="stats">
+                        <div class="stat-item"><div class="label">Correct</div><div class="value" id="sino-correct">0</div></div>
+                        <div class="stat-item"><div class="label">Total</div><div class="value" id="sino-total">0</div></div>
+                        <div class="stat-item"><div class="label">Accuracy</div><div class="value" id="sino-accuracy">0%</div></div>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="sino-progress" style="width: 0%"></div>
+                    </div>
+
+                    <div class="quiz-container" id="sino-quiz"></div>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn btn-success" onclick="generateSinoQuestion()">Next Question →</button>
+                        <button class="btn btn-secondary" onclick="resetSinoProgress()">Reset Progress</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Native Korean Page -->
+        <div id="native" class="page">
+            <div class="nav-buttons">
+                <button class="btn" onclick="showPage('numbers-menu')">← Back</button>
+            </div>
+
+            <div class="card">
+                <h2 style="color: #667eea; margin-bottom: 20px;">Native Korean Numbers (고유어 수)</h2>
+                
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('native', 'learn')">📖 Lesson</button>
+                    <button class="tab" onclick="switchTab('native', 'practice')">✍️ Test</button>
+                </div>
+
+                <div id="native-learn" class="learn-section active">
+                    <div class="hint-box">
+                        <h4>💡 When to use Native Korean numbers:</h4>
+                        <p>Age (살), hours (시), counting objects, people (명), animals, items with counters</p>
+                    </div>
+
+                    <h3 style="margin: 20px 0 15px 0; color: #2d3748;">Basic Numbers (1-10)</h3>
+                    <div class="number-grid">
+                        <div class="number-item"><div class="num">1</div><div class="korean">하나</div><div class="romanization">hana</div></div>
+                        <div class="number-item"><div class="num">2</div><div class="korean">둘</div><div class="romanization">dul</div></div>
+                        <div class="number-item"><div class="num">3</div><div class="korean">셋</div><div class="romanization">set</div></div>
+                        <div class="number-item"><div class="num">4</div><div class="korean">넷</div><div class="romanization">net</div></div>
+                        <div class="number-item"><div class="num">5</div><div class="korean">다섯</div><div class="romanization">daseot</div></div>
+                        <div class="number-item"><div class="num">6</div><div class="korean">여섯</div><div class="romanization">yeoseot</div></div>
+                        <div class="number-item"><div class="num">7</div><div class="korean">일곱</div><div class="romanization">ilgop</div></div>
+                        <div class="number-item"><div class="num">8</div><div class="korean">여덟</div><div class="romanization">yeodeol</div></div>
+                        <div class="number-item"><div class="num">9</div><div class="korean">아홉</div><div class="romanization">ahop</div></div>
+                        <div class="number-item"><div class="num">10</div><div class="korean">열</div><div class="romanization">yeol</div></div>
+                    </div>
+
+                    <h3 style="margin: 30px 0 15px 0; color: #2d3748;">Numbers 11-99</h3>
+                    <div class="number-grid">
+                        <div class="number-item"><div class="num">11</div><div class="korean">열하나</div><div class="romanization">yeol-hana</div></div>
+                        <div class="number-item"><div class="num">20</div><div class="korean">스물</div><div class="romanization">seumul</div></div>
+                        <div class="number-item"><div class="num">25</div><div class="korean">스물다섯</div><div class="romanization">seumul-daseot</div></div>
+                        <div class="number-item"><div class="num">30</div><div class="korean">서른</div><div class="romanization">seoreun</div></div>
+                        <div class="number-item"><div class="num">40</div><div class="korean">마흔</div><div class="romanization">maheun</div></div>
+                        <div class="number-item"><div class="num">50</div><div class="korean">쉰</div><div class="romanization">swin</div></div>
+                        <div class="number-item"><div class="num">60</div><div class="korean">예순</div><div class="romanization">yesun</div></div>
+                        <div class="number-item"><div class="num">70</div><div class="korean">일흔</div><div class="romanization">ilheun</div></div>
+                        <div class="number-item"><div class="num">80</div><div class="korean">여든</div><div class="romanization">yeodeun</div></div>
+                        <div class="number-item"><div class="num">90</div><div class="korean">아흔</div><div class="romanization">aheun</div></div>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h4>🔢 Formation Pattern</h4>
+                            <ul>
+                                <li>11-19: 열 + number</li>
+                                <li>21-29: 스물 + number</li>
+                                <li>35 = 서른다섯 (30 + 5)</li>
+                                <li>Only goes up to 99!</li>
+                            </ul>
+                        </div>
+                        <div class="info-card">
+                            <h4>⏰ Real Examples</h4>
+                            <ul>
+                                <li>I'm 21 = 스물한 살</li>
+                                <li>3 o'clock = 세 시</li>
+                                <li>5 people = 다섯 명</li>
+                                <li>8 apples = 여덟 개</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="hint-box" style="margin-top: 20px;">
+                        <h4>⚠️ Important Note:</h4>
+                        <p>Native Korean numbers change form when used with counters! 하나→한, 둘→두, 셋→세, 넷→네, 스물→스무 (Example: 한 명, 두 시, 세 개)</p>
+                    </div>
+                </div>
+
+                <div id="native-practice" class="practice-section">
+                    <div class="level-badge" id="native-level">Level 1: Basics (1-10)</div>
+                    
+                    <div class="stats">
+                        <div class="stat-item"><div class="label">Correct</div><div class="value" id="native-correct">0</div></div>
+                        <div class="stat-item"><div class="label">Total</div><div class="value" id="native-total">0</div></div>
+                        <div class="stat-item"><div class="label">Accuracy</div><div class="value" id="native-accuracy">0%</div></div>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="native-progress" style="width: 0%"></div>
+                    </div>
+
+                    <div class="quiz-container" id="native-quiz"></div>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn btn-success" onclick="generateNativeQuestion()">Next Question →</button>
+                        <button class="btn btn-secondary" onclick="resetNativeProgress()">Reset Progress</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Colors Menu -->
+        <div id="colors-menu" class="page">
+            <div class="nav-buttons">
+                <button class="btn" onclick="showPage('menu')">← Main Menu</button>
+            </div>
+
+            <div class="card">
+                <h2 style="color: #667eea; margin-bottom: 20px;">🎨 Korean Colors (색깔)</h2>
+                
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('colors', 'learn')">📖 Lesson</button>
+                    <button class="tab" onclick="switchTab('colors', 'practice')">✍️ Test</button>
+                </div>
+
+                <div id="colors-learn" class="learn-section active">
+                    <div class="hint-box">
+                        <h4>💡 Color Usage:</h4>
+                        <p>Colors in Korean can be used as adjectives or nouns. Add 색 (saek) after the color to emphasize "color".</p>
+                    </div>
+
+                    <h3 style="margin: 20px 0 15px 0; color: #2d3748;">Essential Colors</h3>
+                    <div class="number-grid">
+                        <div class="color-item">
+                            <div class="color-box" style="background: #FF0000;"></div>
+                            <div class="color-info">
+                                <div class="num">Red</div>
+                                <div class="korean">빨간색</div>
+                                <div class="romanization">ppalgansaek</div>
+                            </div>
+                        </div>
+                        <div class="color-item">
+                            <div class="color-box" style="background: #0000FF;"></div>
+                            <div class="color-info">
+                                <div class="num">Blue</div>
+                                <div class="korean">파란색</div>
+                                <div class="romanization">paransaek</div>
+                            </div>
+                        </div>
+                        <div class="color-item">
+                            <div class="color-box" style="background: #FFFF00;"></div>
+                            <div class="color-info">
+                                <div class="num">Yellow</div>
+                                <div class="korean">노란색</div>
+                                <div class="romanization">noransaek</div>
+                            </div>
+                        </div>
+                        <div class="color-item">
+                            <div class="color-box" style="background: #00FF00;"></div>
+                            <div class="color-info">
+                                <div class="num">Green</div>
+                                <div class="korean">초록색</div>
+                                <div class="romanization">choroksaek</div>
+                            </div>
+                        </div>
+                        <div class="color-item">
+                            <div class="color-box" style="background: #000000;"></div>
+                            <div class="color-info">
+                                <div class="num">Black</div>
+                                <div class="korean">검은색</div>
+                                <div class="romanization">geomeunsaek</div>
+                            </div>
+                        </div>
+                        <div class="color-item">
+                            <div class="color-box" style="background: #FFFFFF; border: 2px solid #ccc;"></div>
+                            <div class="color-info">
+                                <div class="num">White</div>
+                                <div class="korean">하얀색</div>
+                                <div class="romanization">hayansaek</div>
+                            </div>
+                        </div>
+                        <div class="color-item">
+                            <div class="color-box" style="background: #FFA500;"></div>
+                            <div class="color-info">
+                                <div class="num">Orange</div>
+                                <div class="korean">주황색</div>
+                                <div class="romanization">juhwangsaek</div>
+                            </div>
+                        </div>
+                        <div class="color-item">
+                            <div class="color-box" style="background: #FFC0CB;"></div>
+                            <div class="color-info">
+                                <div class="num">Pink</div>
+                                <div class="korean">분홍색</div>
+                                <div class="romanization">bunhongsaek</div>
+                            </div>
+                        </div>
+                        <div class="color-item">
+                            <div class="color-box" style="background: #A020F0;"></div>
+                            <div class="color-info">
+                                <div class="num">Purple</div>
+                                <div class="korean">보라색</div>
+                                <div class="romanization">borasaek</div>
+                            </div>
+                        </div>
+                        <div class="color-item">
+                            <div class="color-box" style="background: #808080;"></div>
+                            <div class="color-info">
+                                <div class="num">Gray</div>
+                                <div class="korean">회색</div>
+                                <div class="romanization">hoesaek</div>
+                            </div>
+                        </div>
+                        <div class="color-item">
+                            <div class="color-box" style="background: #8B4513;"></div>
+                            <div class="color-info">
+                                <div class="num">Brown</div>
+                                <div class="korean">갈색</div>
+                                <div class="romanization">galsaek</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-card" style="margin-top: 20px;">
+                        <h4>🌈 Example Sentences</h4>
+                        <ul>
+                            <li>빨간색 사과 - Red apple</li>
+                            <li>파란색 하늘 - Blue sky</li>
+                            <li>노란색 꽃 - Yellow flower</li>
+                            <li>초록색 나무 - Green tree</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="colors-practice" class="practice-section">
+                    <div class="stats">
+                        <div class="stat-item"><div class="label">Correct</div><div class="value" id="colors-correct">0</div></div>
+                        <div class="stat-item"><div class="label">Total</div><div class="value" id="colors-total">0</div></div>
+                        <div class="stat-item"><div class="label">Accuracy</div><div class="value" id="colors-accuracy">0%</div></div>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="colors-progress" style="width: 0%"></div>
+                    </div>
+
+                    <div class="quiz-container" id="colors-quiz"></div>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn btn-success" onclick="generateColorQuestion()">Next Question →</button>
+                        <button class="btn btn-secondary" onclick="resetColorProgress()">Reset Progress</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DateTime Menu -->
+        <div id="datetime-menu" class="page">
+            <div class="nav-buttons">
+                <button class="btn" onclick="showPage('menu')">← Main Menu</button>
+            </div>
+
+            <div class="card">
+                <h2 style="color: #667eea; margin-bottom: 20px;">📅 Time & Date (시간과 날짜)</h2>
+                
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('datetime', 'learn')">📖 Lesson</button>
+                    <button class="tab" onclick="switchTab('datetime', 'practice')">✍️ Test</button>
+                </div>
+
+                <div id="datetime-learn" class="learn-section active">
+                    <div class="hint-box">
+                        <h4>💡 Key Points:</h4>
+                        <p>Hours use Native Korean, minutes use Sino-Korean. Days use Sino-Korean. Remember the patterns!</p>
+                    </div>
+
+                    <h3 style="margin: 20px 0 15px 0; color: #2d3748;">Days of the Week</h3>
+                    <div class="datetime-grid">
+                        <div class="number-item"><div class="num">Monday</div><div class="korean">월요일</div><div class="romanization">woryoil</div></div>
+                        <div class="number-item"><div class="num">Tuesday</div><div class="korean">화요일</div><div class="romanization">hwayoil</div></div>
+                        <div class="number-item"><div class="num">Wednesday</div><div class="korean">수요일</div><div class="romanization">suyoil</div></div>
+                        <div class="number-item"><div class="num">Thursday</div><div class="korean">목요일</div><div class="romanization">mogyoil</div></div>
+                        <div class="number-item"><div class="num">Friday</div><div class="korean">금요일</div><div class="romanization">geumyoil</div></div>
+                        <div class="number-item"><div class="num">Saturday</div><div class="korean">토요일</div><div class="romanization">toyoil</div></div>
+                        <div class="number-item"><div class="num">Sunday</div><div class="korean">일요일</div><div class="romanization">iryoil</div></div>
+                    </div>
+
+                    <h3 style="margin: 30px 0 15px 0; color: #2d3748;">Months</h3>
+                    <div class="datetime-grid">
+                        <div class="number-item"><div class="num">January</div><div class="korean">일월</div><div class="romanization">irwol</div></div>
+                        <div class="number-item"><div class="num">February</div><div class="korean">이월</div><div class="romanization">iwol</div></div>
+                        <div class="number-item"><div class="num">March</div><div class="korean">삼월</div><div class="romanization">samwol</div></div>
+                        <div class="number-item"><div class="num">April</div><div class="korean">사월</div><div class="romanization">sawol</div></div>
+                        <div class="number-item"><div class="num">May</div><div class="korean">오월</div><div class="romanization">owol</div></div>
+                        <div class="number-item"><div class="num">June</div><div class="korean">육월</div><div class="romanization">yugwol</div></div>
+                        <div class="number-item"><div class="num">July</div><div class="korean">칠월</div><div class="romanization">chirwol</div></div>
+                        <div class="number-item"><div class="num">August</div><div class="korean">팔월</div><div class="romanization">parwol</div></div>
+                        <div class="number-item"><div class="num">September</div><div class="korean">구월</div><div class="romanization">guwol</div></div>
+                        <div class="number-item"><div class="num">October</div><div class="korean">시월</div><div class="romanization">siwol</div></div>
+                        <div class="number-item"><div class="num">November</div><div class="korean">십일월</div><div class="romanization">sibirwol</div></div>
+                        <div class="number-item"><div class="num">December</div><div class="korean">십이월</div><div class="romanization">sibiwol</div></div>
+                    </div>
+
+                    <h3 style="margin: 30px 0 15px 0; color: #2d3748;">Telling Time</h3>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h4>⏰ Time Structure</h4>
+                            <ul>
+                                <li>1 o'clock = 한 시</li>
+                                <li>2:30 = 두 시 삼십 분</li>
+                                <li>5:15 = 다섯 시 십오 분</li>
+                                <li>9:45 = 아홉 시 사십오 분</li>
+                            </ul>
+                        </div>
+                        <div class="info-card">
+                            <h4>📆 Date Examples</h4>
+                            <ul>
+                                <li>March 12 = 삼월 십이일</li>
+                                <li>January 1 = 일월 일일</li>
+                                <li>December 25 = 십이월 이십오일</li>
+                                <li>2026년 = Year 2026</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="hint-box" style="margin-top: 20px;">
+                        <h4>⚠️ Remember:</h4>
+                        <p>Hours: Native Korean (한, 두, 세...) + 시 | Minutes: Sino-Korean (일, 이, 삼...) + 분</p>
+                    </div>
+                </div>
+
+                <div id="datetime-practice" class="practice-section">
+                    <div class="stats">
+                        <div class="stat-item"><div class="label">Correct</div><div class="value" id="datetime-correct">0</div></div>
+                        <div class="stat-item"><div class="label">Total</div><div class="value" id="datetime-total">0</div></div>
+                        <div class="stat-item"><div class="label">Accuracy</div><div class="value" id="datetime-accuracy">0%</div></div>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="datetime-progress" style="width: 0%"></div>
+                    </div>
+
+                    <div class="quiz-container" id="datetime-quiz"></div>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn btn-success" onclick="generateDateTimeQuestion()">Next Question →</button>
+                        <button class="btn btn-secondary" onclick="resetDateTimeProgress()">Reset Progress</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grammar Menu -->
+        <div id="grammar-menu" class="page">
+            <div class="nav-buttons">
+                <button class="btn" onclick="showPage('menu')">← Main Menu</button>
+            </div>
+
+            <div class="header">
+                <h1>📚 Grammar Basics</h1>
+                <p>Choose what to learn!</p>
+            </div>
+
+            <div class="choice-grid">
+                <div class="choice-card sino" onclick="showPage('nouns')">
+                    <h2>📝 Nouns</h2>
+                    <p>100 Essential Daily Nouns</p>
+                    <p style="margin-top: 15px; font-weight: 600;">→ Build your vocabulary foundation</p>
+                </div>
+
+                <div class="choice-card native" onclick="showPage('verbs')">
+                    <h2>⚡ Verbs</h2>
+                    <p>100 Essential Daily Verbs</p>
+                    <p style="margin-top: 15px; font-weight: 600;">→ Express actions & states</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nouns Page -->
+        <div id="nouns" class="page">
+            <div class="nav-buttons">
+                <button class="btn" onclick="showPage('grammar-menu')">← Back</button>
+            </div>
+
+            <div class="card">
+                <h2 style="color: #667eea; margin-bottom: 20px;">📝 Essential Korean Nouns</h2>
+                
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('nouns', 'learn')">📖 Lesson</button>
+                    <button class="tab" onclick="switchTab('nouns', 'practice')">✍️ Test</button>
+                </div>
+
+                <div id="nouns-learn" class="learn-section active">
+                    <div id="nouns-list"></div>
+                </div>
+
+                <div id="nouns-practice" class="practice-section">
+                    <div class="stats">
+                        <div class="stat-item"><div class="label">Correct</div><div class="value" id="nouns-correct">0</div></div>
+                        <div class="stat-item"><div class="label">Total</div><div class="value" id="nouns-total">0</div></div>
+                        <div class="stat-item"><div class="label">Accuracy</div><div class="value" id="nouns-accuracy">0%</div></div>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="nouns-progress" style="width: 0%"></div>
+                    </div>
+
+                    <div class="quiz-container" id="nouns-quiz"></div>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn btn-success" onclick="generateNounQuestion()">Next Question →</button>
+                        <button class="btn btn-secondary" onclick="resetNounProgress()">Reset Progress</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Verbs Page -->
+        <div id="verbs" class="page">
+            <div class="nav-buttons">
+                <button class="btn" onclick="showPage('grammar-menu')">← Back</button>
+            </div>
+
+            <div class="card">
+                <h2 style="color: #667eea; margin-bottom: 20px;">⚡ Essential Korean Verbs</h2>
+                
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('verbs', 'learn')">📖 Lesson</button>
+                    <button class="tab" onclick="switchTab('verbs', 'practice')">✍️ Test</button>
+                </div>
+
+                <div id="verbs-learn" class="learn-section active">
+                    <div id="verbs-list"></div>
+                </div>
+
+                <div id="verbs-practice" class="practice-section">
+                    <div class="stats">
+                        <div class="stat-item"><div class="label">Correct</div><div class="value" id="verbs-correct">0</div></div>
+                        <div class="stat-item"><div class="label">Total</div><div class="value" id="verbs-total">0</div></div>
+                        <div class="stat-item"><div class="label">Accuracy</div><div class="value" id="verbs-accuracy">0%</div></div>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="verbs-progress" style="width: 0%"></div>
+                    </div>
+
+                    <div class="quiz-container" id="verbs-quiz"></div>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn btn-success" onclick="generateVerbQuestion()">Next Question →</button>
+                        <button class="btn btn-secondary" onclick="resetVerbProgress()">Reset Progress</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Number system data (existing)
+        const sinoNumbers = {
+            basic: {1:'일',2:'이',3:'삼',4:'사',5:'오',6:'육',7:'칠',8:'팔',9:'구',10:'십'},
+            tens: {10:'십',20:'이십',30:'삼십',40:'사십',50:'오십',60:'육십',70:'칠십',80:'팔십',90:'구십'},
+            hundreds: {100:'백',200:'이백',300:'삼백',400:'사백',500:'오백',600:'육백',700:'칠백',800:'팔백',900:'구백'},
+            thousands: {1000:'천',2000:'이천',3000:'삼천',4000:'사천',5000:'오천'}
+        };
+
+        const nativeNumbers = {
+            basic: {1:'하나',2:'둘',3:'셋',4:'넷',5:'다섯',6:'여섯',7:'일곱',8:'여덟',9:'아홉',10:'열'},
+            tens: {10:'열',20:'스물',30:'서른',40:'마흔',50:'쉰',60:'예순',70:'일흔',80:'여든',90:'아흔'}
+        };
+
+        // Color data
+        const colors = {
+            '빨간색': {en: 'Red', rom: 'ppalgansaek', hex: '#FF0000'},
+            '파란색': {en: 'Blue', rom: 'paransaek', hex: '#0000FF'},
+            '노란색': {en: 'Yellow', rom: 'noransaek', hex: '#FFFF00'},
+            '초록색': {en: 'Green', rom: 'choroksaek', hex: '#00FF00'},
+            '검은색': {en: 'Black', rom: 'geomeunsaek', hex: '#000000'},
+            '하얀색': {en: 'White', rom: 'hayansaek', hex: '#FFFFFF'},
+            '주황색': {en: 'Orange', rom: 'juhwangsaek', hex: '#FFA500'},
+            '분홍색': {en: 'Pink', rom: 'bunhongsaek', hex: '#FFC0CB'},
+            '보라색': {en: 'Purple', rom: 'borasaek', hex: '#A020F0'},
+            '회색': {en: 'Gray', rom: 'hoesaek', hex: '#808080'},
+            '갈색': {en: 'Brown', rom: 'galsaek', hex: '#8B4513'}
+        };
+
+        // DateTime data
+        const days = {
+            '월요일': {en: 'Monday', rom: 'woryoil'},
+            '화요일': {en: 'Tuesday', rom: 'hwayoil'},
+            '수요일': {en: 'Wednesday', rom: 'suyoil'},
+            '목요일': {en: 'Thursday', rom: 'mogyoil'},
+            '금요일': {en: 'Friday', rom: 'geumyoil'},
+            '토요일': {en: 'Saturday', rom: 'toyoil'},
+            '일요일': {en: 'Sunday', rom: 'iryoil'}
+        };
+
+        const months = {
+            '일월': {en: 'January', rom: 'irwol'},
+            '이월': {en: 'February', rom: 'iwol'},
+            '삼월': {en: 'March', rom: 'samwol'},
+            '사월': {en: 'April', rom: 'sawol'},
+            '오월': {en: 'May', rom: 'owol'},
+            '육월': {en: 'June', rom: 'yugwol'},
+            '칠월': {en: 'July', rom: 'chirwol'},
+            '팔월': {en: 'August', rom: 'parwol'},
+            '구월': {en: 'September', rom: 'guwol'},
+            '시월': {en: 'October', rom: 'siwol'},
+            '십일월': {en: 'November', rom: 'sibirwol'},
+            '십이월': {en: 'December', rom: 'sibiwol'}
+        };
+
+        // Korean Nouns (100 essential)
+        const nouns = [
+            {kr:'사람',en:'person',ex:'저 사람은 선생님이에요.'},
+            {kr:'친구',en:'friend',ex:'제 친구는 한국 사람이에요.'},
+            {kr:'가족',en:'family',ex:'우리 가족은 서울에 살아요.'},
+            {kr:'집',en:'house/home',ex:'집이 학교 근처에 있어요.'},
+            {kr:'학교',en:'school',ex:'학교에 가요.'},
+            {kr:'물',en:'water',ex:'물 좀 주세요.'},
+            {kr:'음식',en:'food',ex:'한국 음식을 좋아해요.'},
+            {kr:'시간',en:'time',ex:'시간이 없어요.'},
+            {kr:'돈',en:'money',ex:'돈이 필요해요.'},
+            {kr:'일',en:'work/job',ex:'오늘 일이 많아요.'},
+            {kr:'이름',en:'name',ex:'이름이 뭐예요?'},
+            {kr:'나라',en:'country',ex:'어느 나라 사람이에요?'},
+            {kr:'도시',en:'city',ex:'서울은 큰 도시예요.'},
+            {kr:'방',en:'room',ex:'방이 깨끗해요.'},
+            {kr:'문',en:'door',ex:'문을 열어 주세요.'},
+            {kr:'창문',en:'window',ex:'창문을 닫아요.'},
+            {kr:'책',en:'book',ex:'책을 읽어요.'},
+            {kr:'컴퓨터',en:'computer',ex:'컴퓨터로 일해요.'},
+            {kr:'전화',en:'phone/call',ex:'전화 주세요.'},
+            {kr:'차',en:'car/tea',ex:'차를 마셔요.'},
+            {kr:'버스',en:'bus',ex:'버스를 타요.'},
+            {kr:'지하철',en:'subway',ex:'지하철로 가요.'},
+            {kr:'비행기',en:'airplane',ex:'비행기를 탔어요.'},
+            {kr:'공항',en:'airport',ex:'공항에 가요.'},
+            {kr:'역',en:'station',ex:'역이 어디예요?'},
+            {kr:'병원',en:'hospital',ex:'병원에 가야 해요.'},
+            {kr:'약',en:'medicine',ex:'약을 먹어요.'},
+            {kr:'가게',en:'store/shop',ex:'가게가 가까워요.'},
+            {kr:'시장',en:'market',ex:'시장에서 샀어요.'},
+            {kr:'은행',en:'bank',ex:'은행이 어디예요?'},
+            {kr:'회사',en:'company',ex:'회사에 다녀요.'},
+            {kr:'선생님',en:'teacher',ex:'선생님이 좋아요.'},
+            {kr:'학생',en:'student',ex:'저는 학생이에요.'},
+            {kr:'의사',en:'doctor',ex:'의사 선생님이에요.'},
+            {kr:'아침',en:'morning/breakfast',ex:'아침을 먹었어요.'},
+            {kr:'점심',en:'lunch',ex:'점심 먹을까요?'},
+            {kr:'저녁',en:'evening/dinner',ex:'저녁에 만나요.'},
+            {kr:'밤',en:'night',ex:'밤에 자요.'},
+            {kr:'낮',en:'daytime',ex:'낮에 일해요.'},
+            {kr:'주말',en:'weekend',ex:'주말에 쉬어요.'},
+            {kr:'휴일',en:'holiday',ex:'오늘은 휴일이에요.'},
+            {kr:'날씨',en:'weather',ex:'날씨가 좋아요.'},
+            {kr:'비',en:'rain',ex:'비가 와요.'},
+            {kr:'눈',en:'snow',ex:'눈이 와요.'},
+            {kr:'바람',en:'wind',ex:'바람이 불어요.'},
+            {kr:'하늘',en:'sky',ex:'하늘이 파래요.'},
+            {kr:'바다',en:'sea/ocean',ex:'바다가 예뻐요.'},
+            {kr:'산',en:'mountain',ex:'산에 가요.'},
+            {kr:'강',en:'river',ex:'강이 커요.'},
+            {kr:'공원',en:'park',ex:'공원에서 놀아요.'},
+            {kr:'꽃',en:'flower',ex:'꽃이 예뻐요.'},
+            {kr:'나무',en:'tree',ex:'나무가 많아요.'},
+            {kr:'동물',en:'animal',ex:'동물을 좋아해요.'},
+            {kr:'개',en:'dog',ex:'개를 키워요.'},
+            {kr:'고양이',en:'cat',ex:'고양이가 귀여워요.'},
+            {kr:'새',en:'bird',ex:'새가 날아요.'},
+            {kr:'옷',en:'clothes',ex:'옷을 입어요.'},
+            {kr:'신발',en:'shoes',ex:'신발을 신어요.'},
+            {kr:'가방',en:'bag',ex:'가방이 무거워요.'},
+            {kr:'모자',en:'hat/cap',ex:'모자를 써요.'},
+            {kr:'시계',en:'watch/clock',ex:'시계를 봐요.'},
+            {kr:'안경',en:'glasses',ex:'안경을 써요.'},
+            {kr:'머리',en:'head/hair',ex:'머리가 아파요.'},
+            {kr:'눈',en:'eye',ex:'눈이 커요.'},
+            {kr:'코',en:'nose',ex:'코가 높아요.'},
+            {kr:'입',en:'mouth',ex:'입을 열어요.'},
+            {kr:'귀',en:'ear',ex:'귀가 아파요.'},
+            {kr:'손',en:'hand',ex:'손을 씻어요.'},
+            {kr:'발',en:'foot',ex:'발이 아파요.'},
+            {kr:'배',en:'stomach/ship',ex:'배가 고파요.'},
+            {kr:'마음',en:'heart/mind',ex:'마음이 좋아요.'},
+            {kr:'생각',en:'thought/idea',ex:'좋은 생각이에요.'},
+            {kr:'말',en:'words/horse',ex:'말을 해요.'},
+            {kr:'언어',en:'language',ex:'언어를 배워요.'},
+            {kr:'한국어',en:'Korean language',ex:'한국어를 공부해요.'},
+            {kr:'영어',en:'English',ex:'영어를 할 수 있어요.'},
+            {kr:'문제',en:'problem',ex:'문제가 있어요.'},
+            {kr:'답',en:'answer',ex:'답을 알아요.'},
+            {kr:'질문',en:'question',ex:'질문이 있어요.'},
+            {kr:'숙제',en:'homework',ex:'숙제를 했어요.'},
+            {kr:'시험',en:'test/exam',ex:'시험을 봐요.'},
+            {kr:'공부',en:'study',ex:'공부를 해요.'},
+            {kr:'운동',en:'exercise',ex:'운동을 좋아해요.'},
+            {kr:'음악',en:'music',ex:'음악을 들어요.'},
+            {kr:'영화',en:'movie',ex:'영화를 봐요.'},
+            {kr:'드라마',en:'TV drama',ex:'드라마를 봐요.'},
+            {kr:'사진',en:'photo',ex:'사진을 찍어요.'},
+            {kr:'그림',en:'picture/painting',ex:'그림을 그려요.'},
+            {kr:'소리',en:'sound',ex:'소리가 커요.'},
+            {kr:'색',en:'color',ex:'색이 예뻐요.'},
+            {kr:'맛',en:'taste',ex:'맛이 좋아요.'},
+            {kr:'냄새',en:'smell',ex:'냄새가 나요.'},
+            {kr:'크기',en:'size',ex:'크기가 커요.'},
+            {kr:'길',en:'road/way',ex:'길을 몰라요.'},
+            {kr:'거리',en:'street/distance',ex:'거리가 멀어요.'},
+            {kr:'곳',en:'place',ex:'좋은 곳이에요.'},
+            {kr:'여행',en:'travel',ex:'여행을 가요.'},
+            {kr:'휴가',en:'vacation',ex:'휴가를 보내요.'},
+            {kr:'약속',en:'promise/appointment',ex:'약속이 있어요.'}
+        ];
+
+        // Korean Verbs (100 essential)
+        const verbs = [
+            {kr:'하다',en:'to do',past:'했어요',present:'해요',future:'할 거예요'},
+            {kr:'가다',en:'to go',past:'갔어요',present:'가요',future:'갈 거예요'},
+            {kr:'오다',en:'to come',past:'왔어요',present:'와요',future:'올 거예요'},
+            {kr:'보다',en:'to see/watch',past:'봤어요',present:'봐요',future:'볼 거예요'},
+            {kr:'먹다',en:'to eat',past:'먹었어요',present:'먹어요',future:'먹을 거예요'},
+            {kr:'마시다',en:'to drink',past:'마셨어요',present:'마셔요',future:'마실 거예요'},
+            {kr:'자다',en:'to sleep',past:'잤어요',present:'자요',future:'잘 거예요'},
+            {kr:'일어나다',en:'to wake up',past:'일어났어요',present:'일어나요',future:'일어날 거예요'},
+            {kr:'앉다',en:'to sit',past:'앉았어요',present:'앉아요',future:'앉을 거예요'},
+            {kr:'서다',en:'to stand',past:'섰어요',present:'서요',future:'설 거예요'},
+            {kr:'걷다',en:'to walk',past:'걸었어요',present:'걸어요',future:'걸을 거예요'},
+            {kr:'뛰다',en:'to run',past:'뛰었어요',present:'뛰어요',future:'뛸 거예요'},
+            {kr:'읽다',en:'to read',past:'읽었어요',present:'읽어요',future:'읽을 거예요'},
+            {kr:'쓰다',en:'to write/use',past:'썼어요',present:'써요',future:'쓸 거예요'},
+            {kr:'말하다',en:'to speak',past:'말했어요',present:'말해요',future:'말할 거예요'},
+            {kr:'듣다',en:'to listen/hear',past:'들었어요',present:'들어요',future:'들을 거예요'},
+            {kr:'배우다',en:'to learn',past:'배웠어요',present:'배워요',future:'배울 거예요'},
+            {kr:'가르치다',en:'to teach',past:'가르쳤어요',present:'가르쳐요',future:'가르칠 거예요'},
+            {kr:'공부하다',en:'to study',past:'공부했어요',present:'공부해요',future:'공부할 거예요'},
+            {kr:'일하다',en:'to work',past:'일했어요',present:'일해요',future:'일할 거예요'},
+            {kr:'놀다',en:'to play',past:'놀았어요',present:'놀아요',future:'놀 거예요'},
+            {kr:'쉬다',en:'to rest',past:'쉬었어요',present:'쉬어요',future:'쉴 거예요'},
+            {kr:'사다',en:'to buy',past:'샀어요',present:'사요',future:'살 거예요'},
+            {kr:'팔다',en:'to sell',past:'팔았어요',present:'팔아요',future:'팔 거예요'},
+            {kr:'주다',en:'to give',past:'줬어요',present:'줘요',future:'줄 거예요'},
+            {kr:'받다',en:'to receive',past:'받았어요',present:'받아요',future:'받을 거예요'},
+            {kr:'만들다',en:'to make',past:'만들었어요',present:'만들어요',future:'만들 거예요'},
+            {kr:'요리하다',en:'to cook',past:'요리했어요',present:'요리해요',future:'요리할 거예요'},
+            {kr:'청소하다',en:'to clean',past:'청소했어요',present:'청소해요',future:'청소할 거예요'},
+            {kr:'빨다',en:'to wash',past:'빨았어요',present:'빨아요',future:'빨 거예요'},
+            {kr:'입다',en:'to wear',past:'입었어요',present:'입어요',future:'입을 거예요'},
+            {kr:'벗다',en:'to take off',past:'벗었어요',present:'벗어요',future:'벗을 거예요'},
+            {kr:'신다',en:'to wear (shoes)',past:'신었어요',present:'신어요',future:'신을 거예요'},
+            {kr:'쓰다',en:'to wear (hat)',past:'썼어요',present:'써요',future:'쓸 거예요'},
+            {kr:'타다',en:'to ride',past:'탔어요',present:'타요',future:'탈 거예요'},
+            {kr:'운전하다',en:'to drive',past:'운전했어요',present:'운전해요',future:'운전할 거예요'},
+            {kr:'열다',en:'to open',past:'열었어요',present:'열어요',future:'열 거예요'},
+            {kr:'닫다',en:'to close',past:'닫았어요',present:'닫아요',future:'닫을 거예요'},
+            {kr:'켜다',en:'to turn on',past:'켰어요',present:'켜요',future:'켤 거예요'},
+            {kr:'끄다',en:'to turn off',past:'껐어요',present:'꺼요',future:'끌 거예요'},
+            {kr:'찾다',en:'to find/look for',past:'찾았어요',present:'찾아요',future:'찾을 거예요'},
+            {kr:'알다',en:'to know',past:'알았어요',present:'알아요',future:'알 거예요'},
+            {kr:'모르다',en:'to not know',past:'몰랐어요',present:'몰라요',future:'모를 거예요'},
+            {kr:'생각하다',en:'to think',past:'생각했어요',present:'생각해요',future:'생각할 거예요'},
+            {kr:'기억하다',en:'to remember',past:'기억했어요',present:'기억해요',future:'기억할 거예요'},
+            {kr:'잊다',en:'to forget',past:'잊었어요',present:'잊어요',future:'잊을 거예요'},
+            {kr:'좋아하다',en:'to like',past:'좋아했어요',present:'좋아해요',future:'좋아할 거예요'},
+            {kr:'사랑하다',en:'to love',past:'사랑했어요',present:'사랑해요',future:'사랑할 거예요'},
+            {kr:'싫어하다',en:'to dislike',past:'싫어했어요',present:'싫어해요',future:'싫어할 거예요'},
+            {kr:'웃다',en:'to smile/laugh',past:'웃었어요',present:'웃어요',future:'웃을 거예요'},
+            {kr:'울다',en:'to cry',past:'울었어요',present:'울어요',future:'울 거예요'},
+            {kr:'춤추다',en:'to dance',past:'춤췄어요',present:'춤춰요',future:'춤출 거예요'},
+            {kr:'노래하다',en:'to sing',past:'노래했어요',present:'노래해요',future:'노래할 거예요'},
+            {kr:'운동하다',en:'to exercise',past:'운동했어요',present:'운동해요',future:'운동할 거예요'},
+            {kr:'수영하다',en:'to swim',past:'수영했어요',present:'수영해요',future:'수영할 거예요'},
+            {kr:'전화하다',en:'to call',past:'전화했어요',present:'전화해요',future:'전화할 거예요'},
+            {kr:'만나다',en:'to meet',past:'만났어요',present:'만나요',future:'만날 거예요'},
+            {kr:'헤어지다',en:'to part/break up',past:'헤어졌어요',present:'헤어져요',future:'헤어질 거예요'},
+            {kr:'결혼하다',en:'to marry',past:'결혼했어요',present:'결혼해요',future:'결혼할 거예요'},
+            {kr:'살다',en:'to live',past:'살았어요',present:'살아요',future:'살 거예요'},
+            {kr:'죽다',en:'to die',past:'죽었어요',present:'죽어요',future:'죽을 거예요'},
+            {kr:'태어나다',en:'to be born',past:'태어났어요',present:'태어나요',future:'태어날 거예요'},
+            {kr:'자라다',en:'to grow up',past:'자랐어요',present:'자라요',future:'자랄 거예요'},
+            {kr:'시작하다',en:'to start',past:'시작했어요',present:'시작해요',future:'시작할 거예요'},
+            {kr:'끝나다',en:'to end/finish',past:'끝났어요',present:'끝나요',future:'끝날 거예요'},
+            {kr:'계속하다',en:'to continue',past:'계속했어요',present:'계속해요',future:'계속할 거예요'},
+            {kr:'멈추다',en:'to stop',past:'멈췄어요',present:'멈춰요',future:'멈출 거예요'},
+            {kr:'기다리다',en:'to wait',past:'기다렸어요',present:'기다려요',future:'기다릴 거예요'},
+            {kr:'도착하다',en:'to arrive',past:'도착했어요',present:'도착해요',future:'도착할 거예요'},
+            {kr:'떠나다',en:'to leave/depart',past:'떠났어요',present:'떠나요',future:'떠날 거예요'},
+            {kr:'돌아오다',en:'to return',past:'돌아왔어요',present:'돌아와요',future:'돌아올 거예요'},
+            {kr:'들어가다',en:'to enter',past:'들어갔어요',present:'들어가요',future:'들어갈 거예요'},
+            {kr:'나가다',en:'to go out',past:'나갔어요',present:'나가요',future:'나갈 거예요'},
+            {kr:'올라가다',en:'to go up',past:'올라갔어요',present:'올라가요',future:'올라갈 거예요'},
+            {kr:'내려가다',en:'to go down',past:'내려갔어요',present:'내려가요',future:'내려갈 거예요'},
+            {kr:'건너다',en:'to cross',past:'건넜어요',present:'건너요',future:'건널 거예요'},
+            {kr:'돕다',en:'to help',past:'도왔어요',present:'도와요',future:'도울 거예요'},
+            {kr:'묻다',en:'to ask',past:'물었어요',present:'물어요',future:'물을 거예요'},
+            {kr:'대답하다',en:'to answer',past:'대답했어요',present:'대답해요',future:'대답할 거예요'},
+            {kr:'설명하다',en:'to explain',past:'설명했어요',present:'설명해요',future:'설명할 거예요'},
+            {kr:'이해하다',en:'to understand',past:'이해했어요',present:'이해해요',future:'이해할 거예요'},
+            {kr:'느끼다',en:'to feel',past:'느꼈어요',present:'느껴요',future:'느낄 거예요'},
+            {kr:'보내다',en:'to send/spend',past:'보냈어요',present:'보내요',future:'보낼 거예요'},
+            {kr:'받다',en:'to receive',past:'받았어요',present:'받아요',future:'받을 거예요'},
+            {kr:'바꾸다',en:'to change',past:'바꿨어요',present:'바꿔요',future:'바꿀 거예요'},
+            {kr:'고르다',en:'to choose',past:'골랐어요',present:'골라요',future:'고를 거예요'},
+            {kr:'정하다',en:'to decide',past:'정했어요',present:'정해요',future:'정할 거예요'},
+            {kr:'준비하다',en:'to prepare',past:'준비했어요',present:'준비해요',future:'준비할 거예요'},
+            {kr:'확인하다',en:'to check/confirm',past:'확인했어요',present:'확인해요',future:'확인할 거예요'},
+            {kr:'예약하다',en:'to reserve',past:'예약했어요',present:'예약해요',future:'예약할 거예요'},
+            {kr:'취소하다',en:'to cancel',past:'취소했어요',present:'취소해요',future:'취소할 거예요'},
+            {kr:'사용하다',en:'to use',past:'사용했어요',present:'사용해요',future:'사용할 거예요'},
+            {kr:'필요하다',en:'to need',past:'필요했어요',present:'필요해요',future:'필요할 거예요'},
+            {kr:'원하다',en:'to want',past:'원했어요',present:'원해요',future:'원할 거예요'},
+            {kr:'바라다',en:'to hope/wish',past:'바랐어요',present:'바라요',future:'바랄 거예요'},
+            {kr:'믿다',en:'to believe',past:'믿었어요',present:'믿어요',future:'믿을 거예요'},
+            {kr:'약속하다',en:'to promise',past:'약속했어요',present:'약속해요',future:'약속할 거예요'}
+        ];
+
+        let sinoStats = {correct: 0, total: 0, level: 1, currentAnswer: null};
+        let nativeStats = {correct: 0, total: 0, level: 1, currentAnswer: null};
+        let colorStats = {correct: 0, total: 0, currentAnswer: null};
+        let datetimeStats = {correct: 0, total: 0, currentAnswer: null};
+        let nounStats = {correct: 0, total: 0, currentAnswer: null};
+        let verbStats = {correct: 0, total: 0, currentAnswer: null};
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            if (pageId === 'nouns') loadNouns();
+            if (pageId === 'verbs') loadVerbs();
+        }
+
+        function switchTab(system, type) {
+            const learnSection = document.getElementById(`${system}-learn`);
+            const practiceSection = document.getElementById(`${system}-practice`);
+            const tabs = document.querySelectorAll(`#${system === 'nouns' || system === 'verbs' ? system : system + '-menu'} .tab`);
+
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (type === 'learn') {
+                learnSection.classList.add('active');
+                practiceSection.classList.remove('active');
+            } else {
+                learnSection.classList.remove('active');
+                practiceSection.classList.add('active');
+                if (system === 'sino' && sinoStats.total === 0) generateSinoQuestion();
+                if (system === 'native' && nativeStats.total === 0) generateNativeQuestion();
+                if (system === 'colors' && colorStats.total === 0) generateColorQuestion();
+                if (system === 'datetime' && datetimeStats.total === 0) generateDateTimeQuestion();
+                if (system === 'nouns' && nounStats.total === 0) generateNounQuestion();
+                if (system === 'verbs' && verbStats.total === 0) generateVerbQuestion();
+            }
+        }
+
+        function loadNouns() {
+            const list = document.getElementById('nouns-list');
+            list.innerHTML = nouns.map(n => `
+                <div class="word-item">
+                    <div class="korean-word">${n.kr}</div>
+                    <div class="english">${n.en}</div>
+                    <div class="example">📝 ${n.ex}</div>
+                </div>
+            `).join('');
+        }
+
+        function loadVerbs() {
+            const list = document.getElementById('verbs-list');
+            list.innerHTML = verbs.map(v => `
+                <div class="word-item">
+                    <div class="korean-word">${v.kr}</div>
+                    <div class="english">${v.en}</div>
+                    <div class="tense-section">
+                        <div class="tense">⏮️ Past: ${v.past}</div>
+                        <div class="tense">▶️ Present: ${v.present}</div>
+                        <div class="tense">⏭️ Future: ${v.future}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Sino-Korean functions
+        function getSinoKorean(num) {
+            if (num <= 10) return sinoNumbers.basic[num];
+            if (num < 100) {
+                const tens = Math.floor(num / 10) * 10;
+                const ones = num % 10;
+                return sinoNumbers.tens[tens] + (ones > 0 ? sinoNumbers.basic[ones] : '');
+            }
+            if (num < 1000) {
+                const hundreds = Math.floor(num / 100) * 100;
+                const remainder = num % 100;
+                let result = sinoNumbers.hundreds[hundreds];
+                if (remainder > 0) result += getSinoKorean(remainder);
+                return result;
+            }
+            const thousands = Math.floor(num / 1000) * 1000;
+            const remainder = num % 1000;
+            let result = sinoNumbers.thousands[thousands] || (Math.floor(num/1000) > 1 ? getSinoKorean(Math.floor(num/1000)) : '') + '천';
+            if (remainder > 0) result += getSinoKorean(remainder);
+            return result;
+        }
+
+        function getNativeKorean(num) {
+            if (num <= 10) return nativeNumbers.basic[num];
+            if (num <= 99) {
+                const tens = Math.floor(num / 10) * 10;
+                const ones = num % 10;
+                return nativeNumbers.tens[tens] + (ones > 0 ? nativeNumbers.basic[ones] : '');
+            }
+            return null;
+        }
+
+        function generateSinoQuestion() {
+            const level = sinoStats.level;
+            let num;
+            if (level === 1) num = Math.floor(Math.random() * 10) + 1;
+            else if (level === 2) num = Math.floor(Math.random() * 90) + 10;
+            else if (level === 3) num = Math.floor(Math.random() * 900) + 100;
+            else num = Math.floor(Math.random() * 5000) + 1000;
+
+            const correct = getSinoKorean(num);
+            sinoStats.currentAnswer = correct;
+            const options = generateOptions(num, 'sino', correct);
+            displayQuestion('sino', num, options, correct);
+        }
+
+        function generateNativeQuestion() {
+            const level = nativeStats.level;
+            let num = level === 1 ? Math.floor(Math.random() * 10) + 1 : Math.floor(Math.random() * 90) + 10;
+            const correct = getNativeKorean(num);
+            nativeStats.currentAnswer = correct;
+            const options = generateOptions(num, 'native', correct);
+            displayQuestion('native', num, options, correct);
+        }
+
+        function generateColorQuestion() {
+            const colorKeys = Object.keys(colors);
+            const randomKey = colorKeys[Math.floor(Math.random() * colorKeys.length)];
+            const correct = randomKey;
+            const correctEn = colors[randomKey].en;
+            colorStats.currentAnswer = correct;
+
+            const options = [correct];
+            while (options.length < 4) {
+                const wrong = colorKeys[Math.floor(Math.random() * colorKeys.length)];
+                if (!options.includes(wrong)) options.push(wrong);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const quizDiv = document.getElementById('colors-quiz');
+            quizDiv.innerHTML = `
+                <div class="question-card">
+                    <div class="question">What is "${correctEn}" in Korean?</div>
+                    <div class="options">
+                        ${options.map(opt => `<div class="option" onclick="checkAnswer('colors', '${opt}', '${correct}')">${opt}</div>`).join('')}
+                    </div>
+                    <div id="colors-feedback"></div>
+                </div>
+            `;
+        }
+
+        function generateDateTimeQuestion() {
+            const type = Math.random() < 0.5 ? 'day' : 'month';
+            let correct, correctEn, data;
+
+            if (type === 'day') {
+                data = days;
+                const keys = Object.keys(days);
+                const randomKey = keys[Math.floor(Math.random() * keys.length)];
+                correct = randomKey;
+                correctEn = days[randomKey].en;
+            } else {
+                data = months;
+                const keys = Object.keys(months);
+                const randomKey = keys[Math.floor(Math.random() * keys.length)];
+                correct = randomKey;
+                correctEn = months[randomKey].en;
+            }
+
+            datetimeStats.currentAnswer = correct;
+
+            const keys = Object.keys(data);
+            const options = [correct];
+            while (options.length < 4) {
+                const wrong = keys[Math.floor(Math.random() * keys.length)];
+                if (!options.includes(wrong)) options.push(wrong);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const quizDiv = document.getElementById('datetime-quiz');
+            quizDiv.innerHTML = `
+                <div class="question-card">
+                    <div class="question">What is "${correctEn}" in Korean?</div>
+                    <div class="options">
+                        ${options.map(opt => `<div class="option" onclick="checkAnswer('datetime', '${opt}', '${correct}')">${opt}</div>`).join('')}
+                    </div>
+                    <div id="datetime-feedback"></div>
+                </div>
+            `;
+        }
+
+        function generateNounQuestion() {
+            const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
+            const correct = randomNoun.kr;
+            const correctEn = randomNoun.en;
+            nounStats.currentAnswer = correct;
+
+            const options = [correct];
+            while (options.length < 4) {
+                const wrong = nouns[Math.floor(Math.random() * nouns.length)].kr;
+                if (!options.includes(wrong)) options.push(wrong);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const quizDiv = document.getElementById('nouns-quiz');
+            quizDiv.innerHTML = `
+                <div class="question-card">
+                    <div class="question">What is "${correctEn}" in Korean?</div>
+                    <div class="options">
+                        ${options.map(opt => `<div class="option" onclick="checkAnswer('nouns', '${opt}', '${correct}')">${opt}</div>`).join('')}
+                    </div>
+                    <div id="nouns-feedback"></div>
+                </div>
+            `;
+        }
+
+        function generateVerbQuestion() {
+            const randomVerb = verbs[Math.floor(Math.random() * verbs.length)];
+            const correct = randomVerb.kr;
+            const correctEn = randomVerb.en;
+            verbStats.currentAnswer = correct;
+
+            const options = [correct];
+            while (options.length < 4) {
+                const wrong = verbs[Math.floor(Math.random() * verbs.length)].kr;
+                if (!options.includes(wrong)) options.push(wrong);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const quizDiv = document.getElementById('verbs-quiz');
+            quizDiv.innerHTML = `
+                <div class="question-card">
+                    <div class="question">What is "${correctEn}" in Korean?</div>
+                    <div class="options">
+                        ${options.map(opt => `<div class="option" onclick="checkAnswer('verbs', '${opt}', '${correct}')">${opt}</div>`).join('')}
+                    </div>
+                    <div id="verbs-feedback"></div>
+                </div>
+            `;
+        }
+
+        function generateOptions(num, type, correct) {
+            const options = [correct];
+            const used = new Set([num]);
+
+            while (options.length < 4) {
+                let wrongNum;
+                if (type === 'sino') {
+                    if (sinoStats.level === 1) wrongNum = Math.floor(Math.random() * 10) + 1;
+                    else if (sinoStats.level === 2) wrongNum = Math.floor(Math.random() * 90) + 10;
+                    else if (sinoStats.level === 3) wrongNum = Math.floor(Math.random() * 900) + 100;
+                    else wrongNum = Math.floor(Math.random() * 5000) + 1000;
+                } else {
+                    if (nativeStats.level === 1) wrongNum = Math.floor(Math.random() * 10) + 1;
+                    else wrongNum = Math.floor(Math.random() * 90) + 10;
+                }
+
+                if (!used.has(wrongNum)) {
+                    used.add(wrongNum);
+                    const wrongAnswer = type === 'sino' ? getSinoKorean(wrongNum) : getNativeKorean(wrongNum);
+                    if (wrongAnswer && !options.includes(wrongAnswer)) options.push(wrongAnswer);
+                }
+            }
+
+            return options.sort(() => Math.random() - 0.5);
+        }
+
+        function displayQuestion(system, num, options, correct) {
+            const quizDiv = document.getElementById(`${system}-quiz`);
+            quizDiv.innerHTML = `
+                <div class="question-card">
+                    <div class="question">What is ${num} in Korean?</div>
+                    <div class="options">
+                        ${options.map(opt => `<div class="option" onclick="checkAnswer('${system}', '${opt}', '${correct}')">${opt}</div>`).join('')}
+                    </div>
+                    <div id="${system}-feedback"></div>
+                </div>
+            `;
+        }
+
+        function checkAnswer(system, selected, correct) {
+            const stats = {sino: sinoStats, native: nativeStats, colors: colorStats, datetime: datetimeStats, nouns: nounStats, verbs: verbStats}[system];
+            const options = document.querySelectorAll(`#${system}-quiz .option`);
+            
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.textContent === correct) opt.classList.add('correct');
+                if (opt.textContent === selected && selected !== correct) opt.classList.add('incorrect');
+            });
+
+            stats.total++;
+            if (selected === correct) {
+                stats.correct++;
+                document.getElementById(`${system}-feedback`).innerHTML = '<div class="feedback correct">✅ Correct! 잘했어요!</div>';
+            } else {
+                document.getElementById(`${system}-feedback`).innerHTML = `<div class="feedback incorrect">❌ Incorrect. The correct answer is: ${correct}</div>`;
+            }
+
+            updateStats(system);
+            if (system === 'sino' || system === 'native') checkLevelUp(system);
+        }
+
+        function updateStats(system) {
+            const stats = {sino: sinoStats, native: nativeStats, colors: colorStats, datetime: datetimeStats, nouns: nounStats, verbs: verbStats}[system];
+            const accuracy = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+
+            document.getElementById(`${system}-correct`).textContent = stats.correct;
+            document.getElementById(`${system}-total`).textContent = stats.total;
+            document.getElementById(`${system}-accuracy`).textContent = accuracy + '%';
+            
+            const progress = system === 'sino' || system === 'native' ? 
+                Math.min((stats.correct / (stats.level * 10)) * 100, 100) : 
+                Math.min((stats.correct / 10) * 100, 100);
+            document.getElementById(`${system}-progress`).style.width = progress + '%';
+        }
+
+        function checkLevelUp(system) {
+            const stats = system === 'sino' ? sinoStats : nativeStats;
+            const accuracy = stats.total > 0 ? (stats.correct / stats.total) * 100 : 0;
+
+            if (stats.correct >= stats.level * 10 && accuracy >= 70) {
+                stats.level++;
+                const levelText = system === 'sino' ? 
+                    ['Basics (1-10)', 'Intermediate (10-99)', 'Advanced (100-999)', 'Master (1000+)'] :
+                    ['Basics (1-10)', 'Intermediate (11-99)', 'Advanced (11-99)'];
+                
+                const maxLevel = system === 'sino' ? 4 : 3;
+                if (stats.level <= maxLevel) {
+                    document.getElementById(`${system}-level`).textContent = `Level ${stats.level}: ${levelText[stats.level - 1]}`;
+                    alert(`🎉 Level Up! You've reached Level ${stats.level}!`);
+                }
+            }
+        }
+
+        function resetSinoProgress() {
+            if (confirm('Are you sure you want to reset your progress?')) {
+                sinoStats = {correct: 0, total: 0, level: 1, currentAnswer: null};
+                updateStats('sino');
+                document.getElementById('sino-level').textContent = 'Level 1: Basics (1-10)';
+                document.getElementById('sino-quiz').innerHTML = '';
+            }
+        }
+
+        function resetNativeProgress() {
+            if (confirm('Are you sure you want to reset your progress?')) {
+                nativeStats = {correct: 0, total: 0, level: 1, currentAnswer: null};
+                updateStats('native');
+                document.getElementById('native-level').textContent = 'Level 1: Basics (1-10)';
+                document.getElementById('native-quiz').innerHTML = '';
+            }
+        }
+
+        function resetColorProgress() {
+            if (confirm('Are you sure you want to reset your progress?')) {
+                colorStats = {correct: 0, total: 0, currentAnswer: null};
+                updateStats('colors');
+                document.getElementById('colors-quiz').innerHTML = '';
+            }
+        }
+
+        function resetDateTimeProgress() {
+            if (confirm('Are you sure you want to reset your progress?')) {
+                datetimeStats = {correct: 0, total: 0, currentAnswer: null};
+                updateStats('datetime');
+                document.getElementById('datetime-quiz').innerHTML = '';
+            }
+        }
+
+        function resetNounProgress() {
+            if (confirm('Are you sure you want to reset your progress?')) {
+                nounStats = {correct: 0, total: 0, currentAnswer: null};
+                updateStats('nouns');
+                document.getElementById('nouns-quiz').innerHTML = '';
+            }
+        }
+
+        function resetVerbProgress() {
+            if (confirm('Are you sure you want to reset your progress?')) {
+                verbStats = {correct: 0, total: 0, currentAnswer: null};
+                updateStats('verbs');
+                document.getElementById('verbs-quiz').innerHTML = '';
+            }
+        }
+    </script>
+</body>
+</html>
+
