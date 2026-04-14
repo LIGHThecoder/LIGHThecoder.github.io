@@ -25,6 +25,7 @@
             color: var(--accent-blue);
             padding: 1rem;
             overflow: hidden;
+            margin: 0;
         }
 
         @keyframes moveGradient {
@@ -61,7 +62,7 @@
             inset: -15px;
             pointer-events: none;
             z-index: -1;
-            filter: url(#flame-filter); /* Artistic distortion for actual flame look */
+            filter: url(#flame-filter);
         }
 
         .flame-layer {
@@ -103,6 +104,8 @@
             -webkit-mask-composite: destination-out;
             animation: rotateAngle 6s linear infinite;
             filter: drop-shadow(0 0 15px var(--flame-cyan));
+            /* FIX: Allow clicks to pass through the border glow pseudo-element */
+            pointer-events: none; 
         }
 
         @keyframes flameFlicker {
@@ -120,7 +123,6 @@
             to { --angle: 360deg; }
         }
 
-        /* Rest of your existing styles */
         .page {
             position: absolute;
             inset: 0;
@@ -128,6 +130,7 @@
             transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
             display: flex;
             flex-direction: column;
+            z-index: 1; /* Fix: ensures content stays above background layers */
         }
 
         @media (min-width: 1024px) {
@@ -238,7 +241,6 @@
 </head>
 <body>
 
-    <!-- SVG Filters for the Artistic Flame Effect -->
     <svg style="position: fixed; width: 0; height: 0;">
         <filter id="flame-filter">
             <feTurbulence type="fractalNoise" baseFrequency="0.03 0.15" numOctaves="3" seed="5">
@@ -249,13 +251,11 @@
     </svg>
 
     <div class="glass-container">
-        <!-- Flame Visual Elements -->
         <div class="flame-border">
             <div class="flame-layer flame-layer-1"></div>
             <div class="flame-layer flame-layer-2"></div>
         </div>
 
-        <!-- PAGE 1: LIBRARY -->
         <div id="libraryPage" class="page">
             <div class="mb-10 text-center">
                 <h1 class="cursive-title text-4xl">PURPOSE</h1>
@@ -266,7 +266,6 @@
             <div id="songList" class="flex-1 overflow-y-auto space-y-4 pr-1"></div>
         </div>
 
-        <!-- PAGE 2: PLAYER -->
         <div id="playerPage" class="page hidden-right">
             <div class="flex justify-between items-center mb-6">
                 <button onclick="showPage('library')" class="p-3 border border-blue-600/20 rounded-2xl hover:bg-white/10 transition-all">
@@ -313,7 +312,7 @@
         </div>
     </div> 
 
-    <audio id="audioElement" crossorigin="anonymous" controlsList="nodownload"></audio>
+    <audio id="audioElement" controlsList="nodownload"></audio>
 
     <script> 
         const audio = document.getElementById('audioElement');
@@ -408,6 +407,7 @@
         }
 
         function skip(seconds) { audio.currentTime += seconds; }
+        
         function formatTime(secs) {
             if (isNaN(secs)) return "0:00";
             const min = Math.floor(secs / 60);
@@ -423,6 +423,15 @@
         audio.addEventListener('timeupdate', () => {
             if(!progressBar.dragging) progressBar.value = audio.currentTime;
             currentTimeEl.innerText = formatTime(audio.currentTime);
+        });
+
+        // FIX: Autoplay next track when the current one finishes
+        audio.addEventListener('ended', () => {
+            if (currentSongIndex < songs.length - 1) {
+                selectSong(currentSongIndex + 1);
+            } else {
+                updatePlayUI(false);
+            }
         });
 
         progressBar.addEventListener('input', () => { progressBar.dragging = true; });
