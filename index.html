@@ -98,10 +98,10 @@
 </head>
 <body>
   <div class="box">
-    <h1>재림님 환영합니다</h1>
+    <h1>환영합니다</h1>
     
     <div id="password-section">
-      <p>Please enter the password to continue: <i>password is 24082004</i></p>
+      <p>Please enter the password to continue: </p>
       <div id="password-form">
         <input type="password" id="password-input" placeholder="Enter password">
         <button onclick="checkPassword()" class="btn">Submit</button>
@@ -115,7 +115,7 @@
         <h1>My Projects</h1>
       </div>
       <div class="links">
-        <a href="viva_la_vida.html" class="btn">💜진우의 노래💜</a>
+        <a href="viva_la_vida.html" class="btn">김남존</a>
       </div>
       <div class="links">
         <a href="klearning.html" class="btn">K Learning</a>
@@ -136,7 +136,7 @@
     function checkPassword() {
       const password = document.getElementById('password-input').value;
       // Change 'yourpassword' to your desired password
-      if (password === '24082004') {
+      if (password === '885522') {
         document.getElementById('password-section').style.display = 'none';
         document.getElementById('content').style.display = 'block';
       } else {

@@ -3,86 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viva la Vida // Music</title>
+    <title>Viva la Vida</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --accent-blue: #2563eb;
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: linear-gradient(-45deg, #ffffff, #60a5fa, #a855f7, #ec4899, #8b5cf6);
+            background: linear-gradient(135deg, #000000, #1a1a1a, #ffffff, #f0f0f0);
             background-size: 400% 400%;
-            animation: auraGradient 15s ease infinite;
+            animation: moveGradient 12s cubic-bezier(0.4, 0, 0.2, 1) infinite;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #1e293b;
+            color: var(--accent-blue);
             padding: 1rem;
             overflow: hidden;
         }
 
-        @keyframes auraGradient {
+        @keyframes moveGradient {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        .cursive-title {
-            font-family: 'Great Vibes', cursive;
-            background: linear-gradient(to right, #8b5cf6, #ec4899);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.2));
-            font-size: clamp(2.5rem, 8vw, 3.5rem);
-            line-height: 1.2;
-        }
-
+        /* REENGINEERED GLASS: 
+           Adaptive color response via blending and opacity 
+        */
         .glass-container {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.1);
-            border-radius: 2.5rem;
+            position: relative;
             width: 100%;
-            max-width: 400px;
-            height: clamp(650px, 90vh, 780px);
+            /* Responsive Sizing: Phone vs Computer */
+            max-width: 420px;
+            height: 85vh; /* Flexible height */
+            max-height: 800px;
+            
+            /* The "Adaptive Reflection" Logic */
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(30px) saturate(150%) contrast(90%);
+            -webkit-backdrop-filter: blur(30px) saturate(150%) contrast(90%);
+            
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+            border-right: 1px solid rgba(0, 0, 0, 0.2);
+            
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-radius: 2.5rem;
             display: flex;
             flex-direction: column;
-            position: relative;
             overflow: hidden;
+            transition: all 0.5s ease;
+            z-index: 10;
         }
 
+        /* Adaptive "Tint" Layer */
+        .glass-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: inherit;
+            /* This blend mode makes it react to the background colors behind it */
+            mix-blend-mode: difference;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        /* Responsive Padding & Layout */
         .page {
             position: absolute;
             inset: 0;
-            padding: 2rem;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Adjusts for mobile comfort */
+            padding: clamp(1.5rem, 5vw, 2.5rem);
+            transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
             display: flex;
             flex-direction: column;
         }
 
-        .hidden-left { transform: translateX(-100%); opacity: 0; pointer-events: none; }
-        .hidden-right { transform: translateX(100%); opacity: 0; pointer-events: none; }
+        /* Computer/Large Screen specific tweaks */
+        @media (min-width: 1024px) {
+            .glass-container {
+                max-width: 400px;
+                height: 750px;
+                border: 1px solid rgba(255, 255, 255, 0.15);
+            }
+        }
+
+        /* Phone specific tweaks */
+        @media (max-width: 480px) {
+            .glass-container {
+                height: 90vh;
+                border-radius: 2rem;
+            }
+            .cursive-title { font-size: 2.8rem; }
+        }
+
+        .cursive-title {
+            font-family: 'Great Vibes', cursive;
+            color: var(--accent-blue);
+            filter: drop-shadow(0 0 15px rgba(37, 99, 235, 0.4));
+            line-height: 1.1;
+        }
+
+        .hidden-left { transform: translateX(-100%) skewX(-5deg); opacity: 0; pointer-events: none; }
+        .hidden-right { transform: translateX(100%) skewX(5deg); opacity: 0; pointer-events: none; }
 
         .song-card {
-            background: rgba(255, 255, 255, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            border-radius: 1.25rem;
-            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1.2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
         }
 
         .song-card:hover {
-            background: rgba(255, 255, 255, 0.6);
-            transform: translateY(-2px);
+            background: rgba(37, 99, 235, 0.15);
+            border-color: var(--accent-blue);
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px -5px rgba(0,0,0,0.3);
         }
 
         .album-art-container {
-            width: 100%;
-            padding-top: 100%; /* Square aspect ratio */
+            width: 85%;
+            aspect-ratio: 1/1;
             position: relative;
-            margin-bottom: 2rem;
+            margin: 0 auto 2rem;
         }
 
         .album-art-big {
@@ -91,47 +139,57 @@
             border-radius: 2rem;
             background-size: cover;
             background-position: center;
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15);
-            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            background-color: rgba(139, 92, 246, 0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            transition: transform 1s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            background-color: #111;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .album-art-big img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 2rem;
+            filter: grayscale(100%) brightness(0.9);
         }
 
-        .playing .album-art-big { transform: scale(1.03); }
+        .playing .album-art-big { 
+            transform: scale(1.08); 
+            box-shadow: 0 30px 60px rgba(37, 99, 235, 0.2);
+        }
 
-        /* Smaller, more elegant range input */
         input[type="range"] {
             -webkit-appearance: none;
             width: 100%;
-            height: 4px;
-            background: rgba(0,0,0,0.06);
-            border-radius: 10px;
+            height: 3px;
+            background: rgba(37, 99, 235, 0.1);
+            border-radius: 5px;
             cursor: pointer;
         }
 
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 14px;
-            height: 14px;
-            background: #1e293b;
+            width: 16px;
+            height: 16px;
+            background: var(--accent-blue);
             border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 0 15px var(--accent-blue);
+            border: 2px solid white;
         }
 
-        .btn-main:active { transform: scale(0.92); }
+        /* Global Text Enforcement */
+        * { color: var(--accent-blue) !important; }
+
+        .btn-play {
+            background-color: #ffffff !important;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
+        }
         
         #songList::-webkit-scrollbar { width: 3px; }
-        #songList::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        #songList::-webkit-scrollbar-thumb { background: var(--accent-blue); border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -140,62 +198,58 @@
         
         <!-- PAGE 1: LIBRARY -->
         <div id="libraryPage" class="page">
-            <div class="mb-6 pt-2">
-                <h1 class="cursive-title">Viva la Vida</h1>
-                <p class="text-slate-400 font-bold text-xs uppercase tracking-widest mt-1">Curated Vibes</p>
+            <div class="mb-10 text-center">
+                <h1 class="cursive-title text-4xl">PURPOSE</h1>
+                <div class="h-px w-12 bg-blue-600/30 mx-auto mt-4"></div>
+                <p class="font-bold text-[19px] uppercase tracking-[0.6em] mt-4 opacity-50">김남전</p>
             </div>
             
-            <div id="songList" class="flex-1 overflow-y-auto space-y-3 pr-1">
-                <!-- Songs injected via JS -->
+            <div id="songList" class="flex-1 overflow-y-auto space-y-4 pr-1">
+                <!-- Songs via JS -->
             </div>
         </div>
 
         <!-- PAGE 2: PLAYER -->
         <div id="playerPage" class="page hidden-right">
-            <!-- Header -->
             <div class="flex justify-between items-center mb-6">
-                <button onclick="showPage('library')" class="p-2 bg-white/40 rounded-full hover:bg-white transition-all">
+                <button onclick="showPage('library')" class="p-3 border border-blue-600/20 rounded-2xl hover:bg-white/10 transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M164.24,203.76a6,6,0,1,1-8.48,8.48l-80-80a6,6,0,0,1,0-8.48l80-80a6,6,0,0,1,8.48,8.48L92.49,128Z"></path></svg>
                 </button>
-                <span class="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400">Playing Now</span>
-                <div class="w-8"></div>
+                <span class="text-[9px] font-black uppercase tracking-[0.5em]">Reflection</span>
+                <div class="w-10"></div>
             </div>
 
-            <div id="playerContent" class="flex-1 flex flex-col items-center justify-between py-2">
-                <!-- Art -->
+            <div id="playerContent" class="flex-1 flex flex-col items-center justify-around">
                 <div class="album-art-container">
                     <div id="playerArt" class="album-art-big">
                         <img id="posterImg" src="" alt="Album Art" style="display: none;">
                     </div>
                 </div>
                 
-                <!-- Info -->
-                <div class="text-center w-full px-2">
-                    <h2 id="playerTitle" class="text-2xl font-extrabold text-slate-800 line-clamp-1 tracking-tight">Song Title</h2>
-                    <p id="playerArtist" class="text-slate-400 font-bold text-sm mt-1 uppercase tracking-wider">Artist Name</p>
+                <div class="text-center w-full px-4">
+                    <h2 id="playerTitle" class="text-2xl font-extrabold tracking-tighter mb-2">Song Title</h2>
+                    <p id="playerArtist" class="font-bold text-[10px] uppercase tracking-[0.3em] opacity-60">Artist Name</p>
                 </div>
 
-                <!-- Progress -->
-                <div class="w-full px-2 mt-4">
+                <div class="w-full px-4">
                     <input type="range" id="progressBar" value="0" step="0.1">
-                    <div class="flex justify-between text-[10px] font-bold text-slate-400 mt-2">
+                    <div class="flex justify-between text-[10px] font-bold mt-4 tracking-tighter">
                         <span id="currentTime">0:00</span>
                         <span id="duration">0:00</span>
                     </div>
                 </div>
 
-                <!-- CONTROLS: Scaled for browser harmony -->
-                <div class="flex items-center justify-center gap-8 w-full py-4">
-                    <button class="p-2 text-slate-400 hover:text-slate-800 transition-colors btn-main" onclick="skip(-10)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 256 256"><path d="M224,48V208a8,8,0,0,1-12.71,6.47l-96-72a8,8,0,0,1,0-12.94l96-72A8,8,0,0,1,224,48ZM104,48V208a8,8,0,0,1-16,0V48a8,8,0,0,1,16,0Z"></path></svg>
+                <div class="flex items-center justify-center gap-8 w-full pb-6">
+                    <button class="transition-all hover:scale-110 active:scale-95" onclick="skip(-10)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" viewBox="0 0 256 256"><path d="M224,48V208a8,8,0,0,1-12.71,6.47l-96-72a8,8,0,0,1,0-12.94l96-72A8,8,0,0,1,224,48ZM104,48V208a8,8,0,0,1-16,0V48a8,8,0,0,1,16,0Z"></path></svg>
                     </button>
 
-                    <button id="playBtn" class="w-16 h-16 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-lg btn-main hover:scale-105" onclick="togglePlay()">
+                    <button id="playBtn" class="w-20 h-20 rounded-[2rem] btn-play flex items-center justify-center shadow-xl hover:rotate-3 transition-all active:scale-90" onclick="togglePlay()">
                         <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 256 256"><path d="M240,128a15.74,15.74,0,0,1-7.6,13.51L88.32,229.75a16,16,0,0,1-16.2.3,15.86,15.86,0,0,1-8.12-13.81V40.16a15.86,15.86,0,0,1,8.12-13.81,16,16,0,0,1,16.2.3L232.4,114.49A15.74,15.74,0,0,1,240,128Z"></path></svg>
                     </button>
 
-                    <button class="p-2 text-slate-400 hover:text-slate-800 transition-colors btn-main" onclick="skip(10)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 256 256"><path d="M164.71,121.53l-96-72A8,8,0,0,0,56,56V200a8,8,0,0,0,12.71,6.47l96-72a8,8,0,0,0,0-12.94ZM176,48a8,8,0,0,1,16,0V208a8,8,0,0,1-16,0Z"></path></svg>
+                    <button class="transition-all hover:scale-110 active:scale-95" onclick="skip(10)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" viewBox="0 0 256 256"><path d="M164.71,121.53l-96-72A8,8,0,0,0,56,56V200a8,8,0,0,0,12.71,6.47l96-72a8,8,0,0,0,0-12.94ZM176,48a8,8,0,0,1,16,0V208a8,8,0,0,1-16,0Z"></path></svg>
                     </button>
                 </div>
             </div>
@@ -264,16 +318,13 @@
             songList.innerHTML = '';
             songs.forEach((song, index) => {
                 const card = document.createElement('div');
-                card.className = 'song-card p-3 flex items-center gap-4';
+                card.className = 'song-card p-4 flex items-center gap-4';
                 card.onclick = () => selectSong(index);
                 card.innerHTML = `
-                    <div class="w-12 h-12 rounded-lg bg-cover bg-center shadow-sm flex-shrink-0" style="background-image: url('${song.poster}')"></div>
+                    <div class="w-12 h-12 rounded-xl bg-cover bg-center shadow-lg flex-shrink-0 grayscale" style="background-image: url('${song.poster}')"></div>
                     <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-slate-800 truncate text-base">${song.title}</h4>
-                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">${song.artist}</p>
-                    </div>
-                    <div class="text-slate-300 pr-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm36.44-94.44-48-32A6,6,0,0,0,107,95v66a6,6,0,0,0,9.44,5l48-32a6,6,0,0,0,0-10Z"></path></svg>
+                        <h4 class="font-bold truncate text-base mb-1">${song.title}</h4>
+                        <p class="text-[9px] font-black uppercase tracking-widest opacity-60">${song.artist}</p>
                     </div>
                 `;
                 songList.appendChild(card);
@@ -297,49 +348,27 @@
             const song = songs[index];
             audio.pause();
             audio.currentTime = 0;
-            
-            // Properly encode the audio source
             audio.src = encodeURI(song.src);
             
-            // Load poster image
             const posterImg = document.getElementById('posterImg');
             if (song.poster) {
                 posterImg.src = encodeURI(song.poster);
                 posterImg.style.display = 'block';
-            } else {
-                posterImg.style.display = 'none';
             }
             
             document.getElementById('playerTitle').innerText = song.title;
             document.getElementById('playerArtist').innerText = song.artist;
             showPage('player');
             
-            // Load and play audio
             audio.load();
             setTimeout(() => {
-                const playPromise = audio.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        updatePlayUI(true);
-                    }).catch((error) => {
-                        console.error('Play error:', error);
-                        updatePlayUI(false);
-                    });
-                }
+                audio.play().then(() => updatePlayUI(true)).catch(() => updatePlayUI(false));
             }, 100);
         }
 
         function togglePlay() {
             if (audio.paused) {
-                const playPromise = audio.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        updatePlayUI(true);
-                    }).catch((error) => {
-                        console.error('Play error:', error);
-                        updatePlayUI(false);
-                    });
-                }
+                audio.play().then(() => updatePlayUI(true)).catch(() => updatePlayUI(false));
             } else {
                 audio.pause();
                 updatePlayUI(false);
@@ -358,7 +387,6 @@
         }
 
         function skip(seconds) { audio.currentTime += seconds; }
-
         function formatTime(secs) {
             if (isNaN(secs)) return "0:00";
             const min = Math.floor(secs / 60);
@@ -372,18 +400,8 @@
         });
 
         audio.addEventListener('timeupdate', () => {
-            if(!progressBar.dragging) {
-                progressBar.value = audio.currentTime;
-            }
+            if(!progressBar.dragging) progressBar.value = audio.currentTime;
             currentTimeEl.innerText = formatTime(audio.currentTime);
-        });
-
-        audio.addEventListener('play', () => {
-            updatePlayUI(true);
-        });
-
-        audio.addEventListener('pause', () => {
-            updatePlayUI(false);
         });
 
         progressBar.addEventListener('input', () => { progressBar.dragging = true; });
