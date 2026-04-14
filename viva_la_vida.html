@@ -9,6 +9,8 @@
     <style>
         :root {
             --accent-blue: #2563eb;
+            --flame-cyan: #00d4ff;
+            --flame-deep: #1e40af;
         }
 
         body {
@@ -31,74 +33,117 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* REENGINEERED GLASS: 
-           Adaptive color response via blending and opacity 
-        */
+        /* REENGINEERED GLASS WITH ARTISTIC BLUE FLAME EFFECT */
         .glass-container {
             position: relative;
             width: 100%;
-            /* Responsive Sizing: Phone vs Computer */
             max-width: 420px;
-            height: 85vh; /* Flexible height */
+            height: 85vh;
             max-height: 800px;
-            
-            /* The "Adaptive Reflection" Logic */
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(30px) saturate(150%) contrast(90%);
             -webkit-backdrop-filter: blur(30px) saturate(150%) contrast(90%);
-            
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-            border-right: 1px solid rgba(0, 0, 0, 0.2);
-            
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             border-radius: 2.5rem;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             transition: all 0.5s ease;
             z-index: 10;
+            box-shadow: 
+                0 0 30px rgba(0, 212, 255, 0.15),
+                inset 0 0 20px rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Adaptive "Tint" Layer */
-        .glass-container::before {
+        /* THE ARTISTIC FLAME BORDER SYSTEM */
+        .flame-border {
+            position: absolute;
+            inset: -15px;
+            pointer-events: none;
+            z-index: -1;
+            filter: url(#flame-filter); /* Artistic distortion for actual flame look */
+        }
+
+        .flame-layer {
+            position: absolute;
+            inset: 10px;
+            border-radius: 3rem;
+            border: 4px solid transparent;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            -webkit-mask-composite: destination-out;
+        }
+
+        /* Blue Fire Gradient Animation */
+        .flame-layer-1 {
+            background: conic-gradient(from var(--angle), transparent, var(--flame-cyan), var(--accent-blue), var(--flame-deep), var(--flame-cyan), transparent);
+            animation: rotateAngle 3s linear infinite, flameFlicker 0.1s infinite alternate;
+            filter: blur(2px);
+        }
+
+        .flame-layer-2 {
+            background: conic-gradient(from calc(var(--angle) + 180deg), transparent, #fff, var(--flame-cyan), transparent);
+            animation: rotateAngle 5s linear reverse infinite, flameFlicker 0.15s infinite alternate;
+            filter: blur(6px);
+            opacity: 0.6;
+        }
+
+        /* Artistic Glow around all 4 borders */
+        .glass-container::after {
             content: '';
             position: absolute;
-            inset: 0;
-            background: inherit;
-            /* This blend mode makes it react to the background colors behind it */
-            mix-blend-mode: difference;
-            opacity: 0.1;
-            pointer-events: none;
+            inset: -2px;
+            border-radius: 2.5rem;
+            padding: 3px;
+            background: linear-gradient(var(--angle), var(--flame-cyan), transparent 50%, var(--accent-blue));
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            -webkit-mask-composite: destination-out;
+            animation: rotateAngle 6s linear infinite;
+            filter: drop-shadow(0 0 15px var(--flame-cyan));
         }
 
-        /* Responsive Padding & Layout */
+        @keyframes flameFlicker {
+            0% { transform: scale(1.005); opacity: 0.9; }
+            100% { transform: scale(0.995); opacity: 1; }
+        }
+
+        @property --angle {
+            syntax: '<angle>';
+            initial-value: 0deg;
+            inherits: false;
+        }
+
+        @keyframes rotateAngle {
+            to { --angle: 360deg; }
+        }
+
+        /* Rest of your existing styles */
         .page {
             position: absolute;
             inset: 0;
-            /* Adjusts for mobile comfort */
             padding: clamp(1.5rem, 5vw, 2.5rem);
             transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
             display: flex;
             flex-direction: column;
         }
 
-        /* Computer/Large Screen specific tweaks */
         @media (min-width: 1024px) {
             .glass-container {
                 max-width: 400px;
                 height: 750px;
-                border: 1px solid rgba(255, 255, 255, 0.15);
             }
         }
 
-        /* Phone specific tweaks */
         @media (max-width: 480px) {
             .glass-container {
                 height: 90vh;
                 border-radius: 2rem;
             }
             .cursive-title { font-size: 2.8rem; }
+            .glass-container::after { border-radius: 2.1rem; }
         }
 
         .cursive-title {
@@ -180,7 +225,6 @@
             border: 2px solid white;
         }
 
-        /* Global Text Enforcement */
         * { color: var(--accent-blue) !important; }
 
         .btn-play {
@@ -194,8 +238,23 @@
 </head>
 <body>
 
+    <!-- SVG Filters for the Artistic Flame Effect -->
+    <svg style="position: fixed; width: 0; height: 0;">
+        <filter id="flame-filter">
+            <feTurbulence type="fractalNoise" baseFrequency="0.03 0.15" numOctaves="3" seed="5">
+                <animate attributeName="baseFrequency" dur="10s" values="0.03 0.15;0.05 0.25;0.03 0.15" repeatCount="indefinite" />
+            </feTurbulence>
+            <feDisplacementMap in="SourceGraphic" scale="25" />
+        </filter>
+    </svg>
+
     <div class="glass-container">
-        
+        <!-- Flame Visual Elements -->
+        <div class="flame-border">
+            <div class="flame-layer flame-layer-1"></div>
+            <div class="flame-layer flame-layer-2"></div>
+        </div>
+
         <!-- PAGE 1: LIBRARY -->
         <div id="libraryPage" class="page">
             <div class="mb-10 text-center">
@@ -204,9 +263,7 @@
                 <p class="font-bold text-[19px] uppercase tracking-[0.6em] mt-4 opacity-50">김남전</p>
             </div>
             
-            <div id="songList" class="flex-1 overflow-y-auto space-y-4 pr-1">
-                <!-- Songs via JS -->
-            </div>
+            <div id="songList" class="flex-1 overflow-y-auto space-y-4 pr-1"></div>
         </div>
 
         <!-- PAGE 2: PLAYER -->
@@ -265,53 +322,17 @@
         const currentTimeEl = document.getElementById('currentTime');
         const durationEl = document.getElementById('duration');
         const playIcon = document.getElementById('playIcon');
-        const playerArt = document.getElementById('playerArt');
         
         let currentSongIndex = 0;
 
         const songs = [
-            {
-                title: "a PRESENT from the PAST",
-                artist: "Nikhil (ORIGINALS)",
-                poster: "posters and audio/01 track/a present from past (art work).png",
-                src: "posters and audio/01 track/a PRESENT from the PAST.m4a"
-            },
-            {
-                title: "May be NEXT TIME with YOU",
-                artist: "Nikhil (ORIGINALS)",
-                poster: "posters and audio/02 track/may be next time with you (art work).png",
-                src: "posters and audio/02 track/may be next time with you........m4a"
-            },
-            {
-                title: "소나기",
-                artist: "Nikhil",
-                poster: "posters and audio/03 track/image04.png",
-                src: "posters and audio/03 track/audio03.m4a"
-            },
-            {
-                title: "Your HERO",
-                artist: "Nikhil (ORIGINALS)",
-                poster: "posters and audio/04 track/heroimag.png",
-                src: "posters and audio/04 track/Your HERO.m4a"
-            },
-            {
-                title: "वेड तुझा",
-                artist: "Nikhil",
-                poster: "posters and audio/05 track/ved.png",
-                src: "posters and audio/05 track/ved.m4a"
-            },
-            {
-                title: "सैयारा",
-                artist: "Nikhil",
-                poster: "posters and audio/06 track/Saiyaara.png",
-                src: "posters and audio/06 track/Saiyaara.m4a"
-            },
-            {
-                title: "Coming for You",
-                artist: "Nikhil",
-                poster: "posters and audio/07 track/Coming for You.png",
-                src: "posters and audio/07 track/Coming for You.m4a"
-            }
+            { title: "a PRESENT from the PAST", artist: "Nikhil (ORIGINALS)", poster: "posters and audio/01 track/a present from past (art work).png", src: "posters and audio/01 track/a PRESENT from the PAST.m4a" },
+            { title: "May be NEXT TIME with YOU", artist: "Nikhil (ORIGINALS)", poster: "posters and audio/02 track/may be next time with you (art work).png", src: "posters and audio/02 track/may be next time with you........m4a" },
+            { title: "소나기", artist: "Nikhil", poster: "posters and audio/03 track/image04.png", src: "posters and audio/03 track/audio03.m4a" },
+            { title: "Your HERO", artist: "Nikhil (ORIGINALS)", poster: "posters and audio/04 track/heroimag.png", src: "posters and audio/04 track/Your HERO.m4a" },
+            { title: "वेड तुझा", artist: "Nikhil", poster: "posters and audio/05 track/ved.png", src: "posters and audio/05 track/ved.m4a" },
+            { title: "सैयारा", artist: "Nikhil", poster: "posters and audio/06 track/Saiyaara.png", src: "posters and audio/06 track/Saiyaara.m4a" },
+            { title: "Coming for You", artist: "Nikhil", poster: "posters and audio/07 track/Coming for You.png", src: "posters and audio/07 track/Coming for You.m4a" }
         ];
 
         function initLibrary() {
@@ -321,7 +342,7 @@
                 card.className = 'song-card p-4 flex items-center gap-4';
                 card.onclick = () => selectSong(index);
                 card.innerHTML = `
-                    <div class="w-12 h-12 rounded-xl bg-cover bg-center shadow-lg flex-shrink-0 grayscale" style="background-image: url('${song.poster}')"></div>
+                    <div class="w-12 h-12 rounded-xl bg-cover bg-center shadow-lg flex-shrink-0 grayscale" style="background-image: url('${encodeURI(song.poster)}')"></div>
                     <div class="flex-1 min-w-0">
                         <h4 class="font-bold truncate text-base mb-1">${song.title}</h4>
                         <p class="text-[9px] font-black uppercase tracking-widest opacity-60">${song.artist}</p>
